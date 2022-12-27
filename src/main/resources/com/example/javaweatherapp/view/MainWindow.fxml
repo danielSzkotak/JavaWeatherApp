@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane prefHeight="484.0" prefWidth="857.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javaweatherapp.controller.MainWindowController">
+<AnchorPane prefHeight="484.0" prefWidth="857.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="firstCityLabel" layoutX="125.0" layoutY="76.0" prefHeight="17.0" prefWidth="47.0" text="Pogoda" />
       <Button layoutX="123.0" layoutY="144.0" mnemonicParsing="false" onAction="#showWeatherActionBtn" text="Button" />
