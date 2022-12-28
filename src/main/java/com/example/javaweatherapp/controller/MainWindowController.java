@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,7 +30,7 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     @FXML
-    void showWeatherActionBtn() {
+    void showWeatherActionBtn() throws IOException {
         //GET DATA INPUT FROM INTERFACE
         String cityName = "Kraków";
 
@@ -42,7 +43,7 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     private void displayWeather(Weather weather){
-        temperature.setText("25.0 oC");
+        temperature.setText(Double.toString(weather.getTempInCelsius()));
         temperature.setVisible(true);
     }
 
