@@ -28,43 +28,49 @@ public class ExampleWeatherClient implements WeatherClient{
         //MIEJSCE NA PRAWDZIWĄ IMPLEMENTACJĘ
 
         // Make the HTTP request to the API
-        //URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=" + API_KEY);
-        URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=" + API_KEY);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
+        try {
+            CityApi cityApi = new CityApi();
 
-        // Read the response from the API
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
+            URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + cityApi.getCityCoorinates(cityName) + "&appid=" + API_KEY);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            int responseCode = connection.getResponseCode();
+            if (responseCode != 200) {
+                throw  new RuntimeException("ResonseCode " + responseCode);
+            } else {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                String result = response.toString();
+
+                JsonReader jsonReader = Json.createReader(new StringReader(result));
+                JsonObject json = jsonReader.readObject();
+                jsonReader.close();
+
+                return new Weather(cityName, getCurrentDateTemp(json), LocalDate.now());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        reader.close();
-
-        String result = response.toString();
-
-        // Parse the JSON string using the javax.json API
-        JsonReader jsonReader = Json.createReader(new StringReader(result));
-        JsonObject json = jsonReader.readObject();
-        jsonReader.close();
-
-
-        System.out.println(getCurrentDateTemp(json));
-
-        return new Weather(cityName, getCurrentDateTemp(json), LocalDate.now());
+        return null;
     }
 
-    Double getCurrentDateTemp (JsonObject json){
+    String getCurrentDateTemp (JsonObject json){
 
         final JsonArray list = json.getJsonArray("list");
         final JsonObject forecast = list.getJsonObject(0);
         final JsonObject main = forecast.getJsonObject("main");
         final double temp = main.getJsonNumber("temp").doubleValue() - 273.15;
-        BigDecimal bd = new BigDecimal(temp);
-        bd = bd.setScale(1, RoundingMode.HALF_UP);
-        double result = bd.doubleValue();
-        return result;
+        /*BigDecimal bd = new BigDecimal(temp);
+        bd = bd.setScale(0, RoundingMode.HALF_UP);
+        double result = bd.doubleValue();*/
+        DecimalFormat df = new DecimalFormat("#");
+        String formattedValue = df.format(temp);
+        return formattedValue + "°C";
     }
 
 
