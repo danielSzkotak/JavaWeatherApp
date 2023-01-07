@@ -28,7 +28,7 @@ public class OpenWeatherMapClient implements WeatherClient{
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
 
-            return new Weather(cityName, getCurrentDateTemp(json), LocalDate.now());
+            return new Weather(cityName, getCurrentDateTemperature(json), LocalDate.now());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,7 +36,7 @@ public class OpenWeatherMapClient implements WeatherClient{
         return null;
     }
 
-    String getCurrentDateTemp (JsonObject json){
+    String getCurrentDateTemperature(JsonObject json){
 
         final JsonArray list = json.getJsonArray("list");
         final JsonObject forecast = list.getJsonObject(0);

@@ -12,10 +12,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class APIClientService {
-    
+
     private final String API_KEY = "d6d4d66e455fb01b0b1b210628a1dd91";
 
     public String getAPI_KEY() {
+
         return API_KEY;
     }
 
@@ -24,14 +25,11 @@ public class APIClientService {
         try {
             URL url = new URL("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=5&appid=" + API_KEY);
 
-            //APIClientService apiClientService = new APIClientService(url);
             JsonReader jsonReader = getJsonFromAPI(url);
-
             JsonArray json = jsonReader.readArray();
             jsonReader.close();
 
             final JsonObject city1 = json.getJsonObject(0);
-            // final JsonObject localNames = city1.getJsonObject("local_names");
             final double lat = city1.getJsonNumber("lat").doubleValue();
             final double lon = city1.getJsonNumber("lon").doubleValue();
 

@@ -35,13 +35,15 @@ public class MainWindowController extends BaseController implements Initializabl
     void showWeatherActionBtn() throws IOException {
         //GET DATA INPUT FROM INTERFACE
         String cityName = city1TextField.getText();
+        weatherService.setCityName(cityName);
 
         //INVOKE BUISNESS LOGIC / MODEL
-        Weather weather = weatherService.getWeather(cityName);
+        weatherService.setOnSucceeded(workerStateEvent -> {
+            Weather weather = weatherService.getValue();
+            displayWeather(weather);
+        });
 
-        //DISPLAY RESULT FROM BUSINESS LOGIC
-        displayWeather(weather);
-
+        weatherService.restart();
     }
 
     private void displayWeather(Weather weather){
