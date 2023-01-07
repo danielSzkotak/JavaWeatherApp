@@ -8,8 +8,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -24,6 +29,8 @@ public class MainWindowController extends BaseController implements Initializabl
     @FXML
     private Label temperature;
 
+    @FXML
+    private ImageView loadingImage;
 
     private WeatherService weatherService;
 
@@ -39,11 +46,18 @@ public class MainWindowController extends BaseController implements Initializabl
 
         //INVOKE BUISNESS LOGIC / MODEL
         weatherService.setOnSucceeded(workerStateEvent -> {
+            loadingImage.setVisible(false);
             Weather weather = weatherService.getValue();
             displayWeather(weather);
         });
+        weatherService.setOnRunning(workerStateEvent -> {
+
+            loadingImage.setVisible(true);
+            temperature.setVisible(false);
+        });
 
         weatherService.restart();
+
     }
 
     private void displayWeather(Weather weather){
@@ -56,5 +70,8 @@ public class MainWindowController extends BaseController implements Initializabl
 
         weatherService = WeatherServiceFactory.createWeatherService();
         temperature.setVisible(false);
+        loadingImage.setVisible(false);
+        loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
+
     }
 }
