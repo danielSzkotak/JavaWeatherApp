@@ -1,10 +1,9 @@
 package com.example.javaweatherapp.model.client;
 
-import com.example.javaweatherapp.model.Weather;
+import com.example.javaweatherapp.model.SingleDayWeather;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 public interface WeatherClient {
-    Weather getWeather(String cityName) throws IOException;
+    SingleDayWeather getWeather(String cityName) throws IOException;
 }

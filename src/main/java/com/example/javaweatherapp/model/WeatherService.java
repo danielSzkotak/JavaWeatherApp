@@ -5,7 +5,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 // THE MAIN CLASS OF THIS RPOJECT
-public class WeatherService extends Service<Weather> {
+public class WeatherService extends Service<SingleDayWeather> {
 
     private final WeatherClient weatherClient;
 
@@ -23,10 +23,10 @@ public class WeatherService extends Service<Weather> {
 
 
     @Override
-    protected Task<Weather> createTask() {
+    protected Task<SingleDayWeather> createTask() {
         return new Task<>() {
             @Override
-            protected Weather call() throws Exception {
+            protected SingleDayWeather call() throws Exception {
 
                 return weatherClient.getWeather(cityName);
             }

@@ -1,6 +1,6 @@
 package com.example.javaweatherapp.model.client;
 
-import com.example.javaweatherapp.model.Weather;
+import com.example.javaweatherapp.model.SingleDayWeather;
 
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class OpenWeatherMapClient implements WeatherClient{
 
 
     @Override
-    public Weather getWeather(String cityName) throws IOException {
+    public SingleDayWeather getWeather(String cityName) throws IOException {
 
         try {
             APIClientService apiClientService = new APIClientService();
@@ -28,7 +28,7 @@ public class OpenWeatherMapClient implements WeatherClient{
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
 
-            return new Weather(cityName, getCurrentDateTemperature(json), LocalDate.now());
+            return new SingleDayWeather(cityName, getCurrentTemperature(json), LocalDate.now(), getCurrentFeelsLikeTemperature(json));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,12 +36,23 @@ public class OpenWeatherMapClient implements WeatherClient{
         return null;
     }
 
-    String getCurrentDateTemperature(JsonObject json){
+    String getCurrentTemperature(JsonObject json){
 
         final JsonArray list = json.getJsonArray("list");
         final JsonObject forecast = list.getJsonObject(0);
         final JsonObject main = forecast.getJsonObject("main");
         final double temp = main.getJsonNumber("temp").doubleValue() - 273.15;
+        DecimalFormat df = new DecimalFormat("#");
+        String formattedValue = df.format(temp);
+        return formattedValue + "°C";
+    }
+
+    String getCurrentFeelsLikeTemperature(JsonObject json){
+
+        final JsonArray list = json.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject main = forecast.getJsonObject("main");
+        final double temp = main.getJsonNumber("feels_like").doubleValue() - 273.15;
         DecimalFormat df = new DecimalFormat("#");
         String formattedValue = df.format(temp);
         return formattedValue + "°C";

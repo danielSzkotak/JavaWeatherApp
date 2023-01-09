@@ -1,6 +1,6 @@
 package com.example.javaweatherapp.controller;
 
-import com.example.javaweatherapp.model.Weather;
+import com.example.javaweatherapp.model.SingleDayWeather;
 import com.example.javaweatherapp.model.WeatherService;
 import com.example.javaweatherapp.model.WeatherServiceFactory;
 import com.example.javaweatherapp.view.ViewFactory;
@@ -11,11 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -28,13 +24,16 @@ public class MainWindowController extends BaseController implements Initializabl
     private Label firstCityLabel;
 
     @FXML
-    private Label temperature;
+    private Label temperatureLbl;
 
     @FXML
     private ImageView loadingImage;
 
     @FXML
     private ImageView weatherIconImageView;
+
+    @FXML
+    private Label feelsLikeTemperatureLbl;
 
     private WeatherService weatherService;
 
@@ -52,29 +51,30 @@ public class MainWindowController extends BaseController implements Initializabl
         //INVOKE BUISNESS LOGIC / MODEL
         weatherService.setOnSucceeded(workerStateEvent -> {
             loadingImage.setVisible(false);
-            Weather weather = weatherService.getValue();
-            displayWeather(weather);
+            SingleDayWeather singleDayWeather = weatherService.getValue();
+            displayWeather(singleDayWeather);
         });
         weatherService.setOnRunning(workerStateEvent -> {
 
             loadingImage.setVisible(true);
-            temperature.setVisible(false);
+            temperatureLbl.setVisible(false);
         });
 
         weatherService.restart();
 
     }
 
-    private void displayWeather(Weather weather){
-        temperature.setText(weather.getTempInCelsius());
-        temperature.setVisible(true);
+    private void displayWeather(SingleDayWeather singleDayWeather){
+        temperatureLbl.setText(singleDayWeather.getTempInCelsius());
+        temperatureLbl.setVisible(true);
+        feelsLikeTemperatureLbl.setText("Odczuwalna: " + singleDayWeather.getFeelsLikeTemperature());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         weatherService = WeatherServiceFactory.createWeatherService();
-        temperature.setVisible(false);
+        temperatureLbl.setVisible(false);
         loadingImage.setVisible(false);
         loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
         try {
