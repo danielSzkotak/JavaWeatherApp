@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -35,7 +36,6 @@ public class ViewFactory {
         }
 
         Scene scene = new Scene(parent);
-
         Stage stage = new Stage();
         stage.setTitle(title);
         stage.setScene(scene);
