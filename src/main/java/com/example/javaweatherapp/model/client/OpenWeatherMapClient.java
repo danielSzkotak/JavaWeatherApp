@@ -14,8 +14,6 @@ import javax.json.JsonReader;
 
 public class OpenWeatherMapClient implements WeatherClient{
 
-    //private static final String API_KEY = "d6d4d66e455fb01b0b1b210628a1dd91";
-
 
     @Override
     public SingleDayWeather getWeather(String cityName) throws IOException {
@@ -28,7 +26,7 @@ public class OpenWeatherMapClient implements WeatherClient{
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
 
-            return new SingleDayWeather(cityName, getCurrentTemperature(json), LocalDate.now(), getCurrentFeelsLikeTemperature(json));
+            return new SingleDayWeather(cityName, getCurrentTemperature(json), LocalDate.now(), getCurrentFeelsLikeTemperature(json), getCurrentWeatherIcon(json));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,6 +54,17 @@ public class OpenWeatherMapClient implements WeatherClient{
         DecimalFormat df = new DecimalFormat("#");
         String formattedValue = df.format(temp);
         return formattedValue + "°C";
+    }
+
+    String getCurrentWeatherIcon(JsonObject json){
+
+        final JsonArray list = json.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(0);
+        final JsonArray weather = forecast.getJsonArray("weather");
+        final JsonObject weatherObj = weather.getJsonObject(0);
+        final String icon = String.valueOf(weatherObj.getJsonString("icon"));
+        String result = icon.replaceAll("\"([^\"]+)\"", "$1");
+        return result;
     }
 
 

@@ -68,6 +68,7 @@ public class MainWindowController extends BaseController implements Initializabl
         temperatureLbl.setText(singleDayWeather.getTempInCelsius());
         temperatureLbl.setVisible(true);
         feelsLikeTemperatureLbl.setText("Odczuwalna: " + singleDayWeather.getFeelsLikeTemperature());
+        System.out.println(singleDayWeather.getIcon());
     }
 
     @Override
