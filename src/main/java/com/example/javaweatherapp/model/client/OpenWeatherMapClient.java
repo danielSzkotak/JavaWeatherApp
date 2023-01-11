@@ -26,7 +26,8 @@ public class OpenWeatherMapClient implements WeatherClient{
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
 
-            return new SingleDayWeather(cityName, getCurrentTemperature(json), LocalDate.now(), getCurrentFeelsLikeTemperature(json), getCurrentWeatherIconId(json));
+            return new SingleDayWeather(cityName, getCurrentTemperature(json), LocalDate.now(), getCurrentFeelsLikeTemperature(json),
+                    getCurrentWeatherIconId(json), getCurrentWeatherPressure(json));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,6 +66,16 @@ public class OpenWeatherMapClient implements WeatherClient{
         final int iconId = weatherObj.getJsonNumber("id").intValue();
         //String result = icon.replaceAll("\"([^\"]+)\"", "$1");
         return iconId;
+    }
+
+    String getCurrentWeatherPressure(JsonObject json){
+
+        final JsonArray list = json.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject main = forecast.getJsonObject("main");
+        final int pressure = main.getJsonNumber("pressure").intValue();
+        String result = String.valueOf(pressure);
+        return result;
     }
 
 
