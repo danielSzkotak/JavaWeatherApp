@@ -5,7 +5,6 @@ import com.example.javaweatherapp.model.SingleDayWeather;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -13,6 +12,8 @@ import javax.json.JsonReader;
 
 
 public class OpenWeatherMapClient implements WeatherClient{
+
+    private JsonManager jsonManager;
 
 
     @Override
@@ -26,8 +27,10 @@ public class OpenWeatherMapClient implements WeatherClient{
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
 
-            return new SingleDayWeather(cityName, getCurrentTemperature(json), LocalDate.now(), getCurrentFeelsLikeTemperature(json),
-                    getCurrentWeatherIconId(json), getCurrentWeatherPressure(json));
+            this.jsonManager = new JsonManager(json);
+
+            return new SingleDayWeather(cityName, getTemperature(), LocalDate.now(), getFeelsLikeTemperature(),
+                    getWeatherIconId(), getWeatherPressure());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -35,48 +38,20 @@ public class OpenWeatherMapClient implements WeatherClient{
         return null;
     }
 
-    String getCurrentTemperature(JsonObject json){
+            String getTemperature(){
+                   return jsonManager.extractTemperature(0);
+            }
 
-        final JsonArray list = json.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
-        final JsonObject main = forecast.getJsonObject("main");
-        final double temp = main.getJsonNumber("temp").doubleValue() - 273.15;
-        DecimalFormat df = new DecimalFormat("#");
-        String formattedValue = df.format(temp);
-        return formattedValue + "°C";
-    }
+            String getFeelsLikeTemperature(){
+                return jsonManager.extractFeelsLikeTemperature(0);
+            }
 
-    String getCurrentFeelsLikeTemperature(JsonObject json){
+            int getWeatherIconId(){
+                return jsonManager.extractWeatherIconId(0);
+            }
 
-        final JsonArray list = json.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
-        final JsonObject main = forecast.getJsonObject("main");
-        final double temp = main.getJsonNumber("feels_like").doubleValue() - 273.15;
-        DecimalFormat df = new DecimalFormat("#");
-        String formattedValue = df.format(temp);
-        return formattedValue + "°C";
-    }
-
-    int getCurrentWeatherIconId(JsonObject json){
-
-        final JsonArray list = json.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
-        final JsonArray weather = forecast.getJsonArray("weather");
-        final JsonObject weatherObj = weather.getJsonObject(0);
-        final int iconId = weatherObj.getJsonNumber("id").intValue();
-        //String result = icon.replaceAll("\"([^\"]+)\"", "$1");
-        return iconId;
-    }
-
-    String getCurrentWeatherPressure(JsonObject json){
-
-        final JsonArray list = json.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
-        final JsonObject main = forecast.getJsonObject("main");
-        final int pressure = main.getJsonNumber("pressure").intValue();
-        String result = String.valueOf(pressure);
-        return result;
-    }
-
+            String getWeatherPressure(){
+                return jsonManager.extractWeatherPressure(0);
+            }
 
 }
