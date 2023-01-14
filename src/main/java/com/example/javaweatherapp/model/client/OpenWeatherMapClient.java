@@ -6,12 +6,11 @@ import com.example.javaweatherapp.model.SingleDayWeather;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 
-public class OpenWeatherMapClient implements WeatherClient{
+public class OpenWeatherMapClient implements WeatherClient {
 
     private JsonManager jsonManager;
 
@@ -22,7 +21,7 @@ public class OpenWeatherMapClient implements WeatherClient{
         try {
             APIClientService apiClientService = new APIClientService();
             URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + apiClientService.getCityCoordinates(cityName) +
-                    "&appid=" + apiClientService.getAPI_KEY());
+                    "&appid=" + apiClientService.getAPI_KEY() + "&lang=pl");
             JsonReader jsonReader = apiClientService.getJsonFromAPI(url);
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
@@ -30,7 +29,7 @@ public class OpenWeatherMapClient implements WeatherClient{
             this.jsonManager = new JsonManager(json);
 
             return new SingleDayWeather(cityName, getTemperature(), LocalDate.now(), getFeelsLikeTemperature(),
-                    getWeatherIconId(), getWeatherPressure());
+                    getWeatherIconId(), getWeatherPressure(), getRain(), getDescription());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,20 +37,28 @@ public class OpenWeatherMapClient implements WeatherClient{
         return null;
     }
 
-            String getTemperature(){
-                   return jsonManager.extractTemperature(0);
-            }
+    String getTemperature() {
+        return jsonManager.extractTemperature(0);
+    }
 
-            String getFeelsLikeTemperature(){
-                return jsonManager.extractFeelsLikeTemperature(0);
-            }
+    String getFeelsLikeTemperature() {
+        return jsonManager.extractFeelsLikeTemperature(0);
+    }
 
-            int getWeatherIconId(){
-                return jsonManager.extractWeatherIconId(0);
-            }
+    int getWeatherIconId() {
+        return jsonManager.extractWeatherIconId(0);
+    }
 
-            String getWeatherPressure(){
-                return jsonManager.extractWeatherPressure(0);
-            }
+    String getWeatherPressure() {
+        return jsonManager.extractWeatherPressure(0);
+    }
+
+    String getRain() {
+        return jsonManager.extractWeatherRain(0);
+    }
+
+    String getDescription() {
+        return jsonManager.extractWeatherDescription(0);
+    }
 
 }

@@ -2,6 +2,7 @@ package com.example.javaweatherapp.model.client;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import java.text.DecimalFormat;
 
 public class JsonManager {
@@ -53,6 +54,32 @@ public class JsonManager {
         final JsonObject main = forecast.getJsonObject("main");
         final int pressure = main.getJsonNumber("pressure").intValue();
         String result = String.valueOf(pressure);
+        return result;
+    }
+
+    String extractWeatherRain(int forecastDayNumber){
+
+        final JsonArray list = jsonObject.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject rainObj = forecast.getJsonObject("rain");
+        String result = "";
+        if (rainObj == null) {
+            result = "0.0 mm";
+        } else {
+            final double rain = rainObj.getJsonNumber("3h").doubleValue();
+            result = String.valueOf(rain) + "mm";
+        }
+        return result;
+    }
+
+    String extractWeatherDescription(int forecastDayNumber){
+
+        final JsonArray list = jsonObject.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(0);
+        final JsonArray weather = forecast.getJsonArray("weather");
+        final JsonObject weatherObj = weather.getJsonObject(0);
+        final JsonString description = weatherObj.getJsonString("description");
+        final String result = String.valueOf(description);
         return result;
     }
 }
