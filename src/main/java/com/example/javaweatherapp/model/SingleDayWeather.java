@@ -14,13 +14,13 @@ public class SingleDayWeather {
     private final String temp_min;
     private final String temp_max;
     private final String rain;
-    private final String unix_time;
+    private final long unix_time;
 
 
 
 
     public SingleDayWeather(String cityName, String tempInCelsius, LocalDate date, String feelsLikeTemperature, int iconId, String pressure, String rain,
-                            String description, String temp_min, String temp_max, String unix_time) {
+                            String description, String temp_min, String temp_max, long unix_time) {
         this.cityName = cityName;
         this.tempInCelsius = tempInCelsius;
         this.date = date;
@@ -74,7 +74,7 @@ public class SingleDayWeather {
         return temp_max;
     }
 
-    public String getUnix_time() {
+    public long getUnix_time() {
         return unix_time;
     }
 }

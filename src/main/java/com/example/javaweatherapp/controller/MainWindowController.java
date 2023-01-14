@@ -14,8 +14,11 @@ import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.*;
 
 public class MainWindowController extends BaseController implements Initializable {
 
@@ -56,18 +59,21 @@ public class MainWindowController extends BaseController implements Initializabl
 
             WeatherForecast weatherForecast = weatherService.getValue();
 
-            for (int i=0; i<weatherForecast.getWeathers().size(); i++){
+            /*for (int i=0; i<weatherForecast.getWeathers().size(); i++){
                 System.out.println("City: " + city1TextField.getText());
                 System.out.println("UnixDate: " +  weatherForecast.getWeathers().get(i).getUnix_time());
                 System.out.println("Icon id: " +  weatherForecast.getWeathers().get(i).getIcon());
                 System.out.println("Pressure: " +  weatherForecast.getWeathers().get(i).getPressure());
                 System.out.println("Rain: " +  weatherForecast.getWeathers().get(i).getRain());
-                System.out.println("Temp min: " + weatherForecast.getWeathers().get(i).getTemp_min());
+                //System.out.println("Temp min: " + weatherForecast.getWeathers().get(i).getTemp_min());
                 System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
                 System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
                 System.out.println("-----------------------------------------");
-            }
-               displayWeather(weatherForecast.getWeathers());
+            }*/
+               //displayWeather(weatherForecast.getWeathers());
+              //System.out.println("Temp min: " + weatherForecast.getWeathers().get(2).getTemp_min());
+
+
         });
         weatherService.setOnRunning(workerStateEvent -> {
 
@@ -101,4 +107,5 @@ public class MainWindowController extends BaseController implements Initializabl
         }
 
     }
+
 }

@@ -5,7 +5,9 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class JsonManager {
@@ -88,14 +90,54 @@ public class JsonManager {
 
     String extractMinTemperature(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonObject main = forecast.getJsonObject("main");
-        double temp = main.getJsonNumber("temp_min").doubleValue() - 273.15;
-        temp = Math.round(temp);
-        DecimalFormat df = new DecimalFormat("#");
-        String formattedValue = df.format(temp);
-        return formattedValue + "°C";
+
+        if (forecastDayNumber > 0){
+            Calendar date = new GregorianCalendar();
+            date.add(Calendar.DAY_OF_MONTH, forecastDayNumber);
+            date.set(Calendar.HOUR_OF_DAY, 0);
+            date.set(Calendar.MINUTE, 0);
+
+            long start = date.getTimeInMillis() / 1000;
+
+            date.set(Calendar.HOUR_OF_DAY, 23);
+            date.set(Calendar.MINUTE, 59);
+
+            long stop = date.getTimeInMillis() / 1000;
+
+            //-------------------------------------------------------
+
+            JsonArray list = jsonObject.getJsonArray("list");
+            double tempArray[] = new double[40];
+            long timeStamps[] = new long[40];
+
+            for (int i=0; i< list.size(); i++){
+
+                JsonObject forecast = list.getJsonObject(i);
+                JsonObject main = forecast.getJsonObject("main");
+
+                timeStamps[i] = forecast.getJsonNumber("dt").longValue();
+                tempArray[i] = Math.round(main.getJsonNumber("temp").doubleValue() - 273.15);
+
+                //System.out.println(i + ": " + tempArray[i]);
+
+            }
+
+            double temp = 100;
+
+            for (int i=0; i<40; i++){
+                if (timeStamps[i] >= start && timeStamps[i] <= stop){
+                    if (tempArray[i] < temp) {
+                        temp = tempArray[i];
+                    }
+                }
+            }
+
+            System.out.println(temp);
+
+            return "Processing...";
+        }
+
+        return "Today is today";
     }
 
     String extractMaxTemperature(int forecastDayNumber){
@@ -110,16 +152,11 @@ public class JsonManager {
         return formattedValue + "°C";
     }
 
-    String extractUnixTimeStamp(int forecastDayNumber){
+    long extractUnixTimeStamp(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
         final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        //final JsonObject main = forecast.getJsonObject("dt");
         long unix_seconds = forecast.getJsonNumber("dt").longValue();
-        Date date = new Date(unix_seconds*1000L);
-        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-        jdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
-        String java_date = jdf.format(date);
-        return java_date;
+        return unix_seconds;
     }
 }

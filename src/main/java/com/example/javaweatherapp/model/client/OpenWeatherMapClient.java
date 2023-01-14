@@ -52,7 +52,7 @@ public class OpenWeatherMapClient implements WeatherClient {
         int i=0;
         while (i<=40) {
 
-            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(i), LocalDate.now(), getFeelsLikeTemperature(i), getWeatherIconId(i), getWeatherPressure(i), getRain(i), getDescription(i), getMinTemperature(i), getMaxTemperature(i), getUnixTimeStamp(i));
+            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(i), LocalDate.now(), getFeelsLikeTemperature(i), getWeatherIconId(i), getWeatherPressure(i), getRain(i), getDescription(i), null, getMaxTemperature(i), getUnixTimeStamp(i));
             weathers.add(singleDayWeather);
             i=i+8;
             if (i==40) {
@@ -60,9 +60,14 @@ public class OpenWeatherMapClient implements WeatherClient {
             }
         }
 
+        System.out.println(getMinTemperature(1));
+
         WeatherForecast weatherForecast = new WeatherForecast(cityName, weathers);
         return weatherForecast;
     }
+
+
+
 
     private String getMaxTemperature(int forecastDayNumber) {
         return jsonManager.extractMaxTemperature(forecastDayNumber);
@@ -96,7 +101,7 @@ public class OpenWeatherMapClient implements WeatherClient {
         return jsonManager.extractWeatherDescription(forecastDayNumber);
     }
 
-    String getUnixTimeStamp(int forecastDayNumber) {
+    long getUnixTimeStamp(int forecastDayNumber) {
         return jsonManager.extractUnixTimeStamp(forecastDayNumber);
     }
 
