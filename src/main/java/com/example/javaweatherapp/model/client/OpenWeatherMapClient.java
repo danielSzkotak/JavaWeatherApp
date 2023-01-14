@@ -29,12 +29,20 @@ public class OpenWeatherMapClient implements WeatherClient {
             this.jsonManager = new JsonManager(json);
 
             return new SingleDayWeather(cityName, getTemperature(), LocalDate.now(), getFeelsLikeTemperature(),
-                    getWeatherIconId(), getWeatherPressure(), getRain(), getDescription());
+                    getWeatherIconId(), getWeatherPressure(), getRain(), getDescription(), getMinTemperature(), getMaxTemperature());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private String getMaxTemperature() {
+        return jsonManager.extractMaxTemperature(0);
+    }
+
+    private String getMinTemperature() {
+        return jsonManager.extractMinTemperature(0);
     }
 
     String getTemperature() {

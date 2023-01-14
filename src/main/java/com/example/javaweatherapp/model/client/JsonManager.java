@@ -82,4 +82,28 @@ public class JsonManager {
         final String result = String.valueOf(description);
         return result;
     }
+
+    String extractMinTemperature(int forecastDayNumber){
+
+        final JsonArray list = jsonObject.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject main = forecast.getJsonObject("main");
+        double temp = main.getJsonNumber("temp_min").doubleValue() - 273.15;
+        temp = Math.round(temp);
+        DecimalFormat df = new DecimalFormat("#");
+        String formattedValue = df.format(temp);
+        return formattedValue + "°C";
+    }
+
+    String extractMaxTemperature(int forecastDayNumber){
+
+        final JsonArray list = jsonObject.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject main = forecast.getJsonObject("main");
+        double temp = main.getJsonNumber("temp_max").doubleValue() - 273.15;
+        temp = Math.round(temp);
+        DecimalFormat df = new DecimalFormat("#");
+        String formattedValue = df.format(temp);
+        return formattedValue + "°C";
+    }
 }
