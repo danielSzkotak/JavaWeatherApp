@@ -1,13 +1,14 @@
 package com.example.javaweatherapp.model;
 
 import java.util.Collection;
+import java.util.List;
 
 public class WeatherForecast {
 
     private final String cityName;
-    private final Collection<SingleDayWeather> weathers;
+    private final List<SingleDayWeather> weathers;
 
-    public WeatherForecast(String cityName, Collection<SingleDayWeather> weathers) {
+    public WeatherForecast(String cityName, List<SingleDayWeather> weathers) {
         this.cityName = cityName;
         this.weathers = weathers;
     }
@@ -16,9 +17,14 @@ public class WeatherForecast {
         return cityName;
     }
 
-    public Collection<SingleDayWeather> getWeathers() {
+    public List<SingleDayWeather> getWeathers() {
         return weathers;
     }
 
-
+    @Override
+    public String toString() {
+        return "WeatherForecast{" +
+                "weathers=" + weathers +
+                '}';
+    }
 }

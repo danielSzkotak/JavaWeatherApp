@@ -1,6 +1,7 @@
 package com.example.javaweatherapp.controller;
 
 import com.example.javaweatherapp.model.SingleDayWeather;
+import com.example.javaweatherapp.model.WeatherForecast;
 import com.example.javaweatherapp.model.WeatherService;
 import com.example.javaweatherapp.model.WeatherServiceFactory;
 import com.example.javaweatherapp.view.ViewFactory;
@@ -13,6 +14,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainWindowController extends BaseController implements Initializable {
@@ -51,8 +53,21 @@ public class MainWindowController extends BaseController implements Initializabl
         //INVOKE BUISNESS LOGIC / MODEL
         weatherService.setOnSucceeded(workerStateEvent -> {
             loadingImage.setVisible(false);
-            SingleDayWeather singleDayWeather = weatherService.getValue();
-            displayWeather(singleDayWeather);
+
+            WeatherForecast weatherForecast = weatherService.getValue();
+
+            for (int i=0; i<weatherForecast.getWeathers().size(); i++){
+                System.out.println("City: " + city1TextField.getText());
+                System.out.println("UnixDate: " +  weatherForecast.getWeathers().get(i).getUnix_time());
+                System.out.println("Icon id: " +  weatherForecast.getWeathers().get(i).getIcon());
+                System.out.println("Pressure: " +  weatherForecast.getWeathers().get(i).getPressure());
+                System.out.println("Rain: " +  weatherForecast.getWeathers().get(i).getRain());
+                System.out.println("Temp min: " + weatherForecast.getWeathers().get(i).getTemp_min());
+                System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
+                System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
+                System.out.println("-----------------------------------------");
+            }
+               displayWeather(weatherForecast.getWeathers());
         });
         weatherService.setOnRunning(workerStateEvent -> {
 
@@ -64,19 +79,10 @@ public class MainWindowController extends BaseController implements Initializabl
 
     }
 
-    private void displayWeather(SingleDayWeather singleDayWeather){
-        temperatureLbl.setText(singleDayWeather.getTempInCelsius());
+    private void displayWeather(List<SingleDayWeather> weathers){
+        temperatureLbl.setText(weathers.get(0).getTempInCelsius());
         temperatureLbl.setVisible(true);
-        feelsLikeTemperatureLbl.setText("Odczuwalna: " + singleDayWeather.getFeelsLikeTemperature());
-        System.out.println("City: " + city1TextField.getText());
-        System.out.println("Icon id: " + singleDayWeather.getIcon());
-        System.out.println("Pressure: " + singleDayWeather.getPressure());
-        System.out.println("Rain: " + singleDayWeather.getRain());
-        System.out.println("Temp min: " +singleDayWeather.getTemp_min());
-        System.out.println("Temp max: " + singleDayWeather.getTemp_max());
-        System.out.println("Description: " + singleDayWeather.getDescription());
-        System.out.println("-----------------------------------------");
-
+        feelsLikeTemperatureLbl.setText("Odczuwalna: " + weathers.get(0).getFeelsLikeTemperature());
     }
 
     @Override

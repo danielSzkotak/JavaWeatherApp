@@ -4,6 +4,9 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class JsonManager {
 
@@ -28,7 +31,7 @@ public class JsonManager {
     String extractFeelsLikeTemperature(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
         final JsonObject main = forecast.getJsonObject("main");
         double temp = main.getJsonNumber("feels_like").doubleValue() - 273.15;
         temp = Math.round(temp);
@@ -40,7 +43,7 @@ public class JsonManager {
     int extractWeatherIconId(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
         final JsonArray weather = forecast.getJsonArray("weather");
         final JsonObject weatherObj = weather.getJsonObject(0);
         final int iconId = weatherObj.getJsonNumber("id").intValue();
@@ -50,7 +53,7 @@ public class JsonManager {
     String extractWeatherPressure(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
         final JsonObject main = forecast.getJsonObject("main");
         final int pressure = main.getJsonNumber("pressure").intValue();
         String result = String.valueOf(pressure);
@@ -60,7 +63,7 @@ public class JsonManager {
     String extractWeatherRain(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
         final JsonObject rainObj = forecast.getJsonObject("rain");
         String result = "";
         if (rainObj == null) {
@@ -75,7 +78,7 @@ public class JsonManager {
     String extractWeatherDescription(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
         final JsonArray weather = forecast.getJsonArray("weather");
         final JsonObject weatherObj = weather.getJsonObject(0);
         final JsonString description = weatherObj.getJsonString("description");
@@ -86,7 +89,7 @@ public class JsonManager {
     String extractMinTemperature(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
         final JsonObject main = forecast.getJsonObject("main");
         double temp = main.getJsonNumber("temp_min").doubleValue() - 273.15;
         temp = Math.round(temp);
@@ -98,12 +101,25 @@ public class JsonManager {
     String extractMaxTemperature(int forecastDayNumber){
 
         final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(0);
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
         final JsonObject main = forecast.getJsonObject("main");
         double temp = main.getJsonNumber("temp_max").doubleValue() - 273.15;
         temp = Math.round(temp);
         DecimalFormat df = new DecimalFormat("#");
         String formattedValue = df.format(temp);
         return formattedValue + "°C";
+    }
+
+    String extractUnixTimeStamp(int forecastDayNumber){
+
+        final JsonArray list = jsonObject.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
+        //final JsonObject main = forecast.getJsonObject("dt");
+        long unix_seconds = forecast.getJsonNumber("dt").longValue();
+        Date date = new Date(unix_seconds*1000L);
+        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+        jdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+        String java_date = jdf.format(date);
+        return java_date;
     }
 }
