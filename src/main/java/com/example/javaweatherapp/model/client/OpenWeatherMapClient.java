@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -33,11 +32,8 @@ public class OpenWeatherMapClient implements WeatherClient {
             jsonReader.close();
 
             this.jsonManager = new JsonManager(json);
-
             this.cityName = cityName;
 
-            /*return new SingleDayWeather(cityName, getTemperature(0), LocalDate.now(), getFeelsLikeTemperature(0),
-                    getWeatherIconId(0), getWeatherPressure(0), getRain(0), getDescription(0), getMinTemperature(0), getMaxTemperature(0))*/;
             return populateWeathers();
 
         } catch (Exception e) {
@@ -49,24 +45,20 @@ public class OpenWeatherMapClient implements WeatherClient {
     private WeatherForecast populateWeathers(){
 
         weathers.clear();
-        int i=0;
-        while (i<=40) {
+        int oneDaySeparationStepInAPIJson=0; // EVERY 8 READING FROM API IS DAY PERIOD
+        while (oneDaySeparationStepInAPIJson<=40) {
 
-            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(i), LocalDate.now(), getFeelsLikeTemperature(i), getWeatherIconId(i), getWeatherPressure(i), getRain(i), getDescription(i), null, getMaxTemperature(i), getUnixTimeStamp(i));
+            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(oneDaySeparationStepInAPIJson), LocalDate.now(), getFeelsLikeTemperature(oneDaySeparationStepInAPIJson), getWeatherIconId(oneDaySeparationStepInAPIJson), getWeatherPressure(oneDaySeparationStepInAPIJson), getRain(oneDaySeparationStepInAPIJson), getDescription(oneDaySeparationStepInAPIJson), getMinTemperature(oneDaySeparationStepInAPIJson), getMaxTemperature(oneDaySeparationStepInAPIJson), getUnixTimeStamp(oneDaySeparationStepInAPIJson));
             weathers.add(singleDayWeather);
-            i=i+8;
-            if (i==40) {
-                i = 39;
+            oneDaySeparationStepInAPIJson=oneDaySeparationStepInAPIJson+8;
+            if (oneDaySeparationStepInAPIJson==40) {
+                oneDaySeparationStepInAPIJson = 39;
             }
         }
-
-        System.out.println(getMinTemperature(1));
 
         WeatherForecast weatherForecast = new WeatherForecast(cityName, weathers);
         return weatherForecast;
     }
-
-
 
 
     private String getMaxTemperature(int forecastDayNumber) {

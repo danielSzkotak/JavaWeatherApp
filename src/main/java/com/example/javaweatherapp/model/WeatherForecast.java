@@ -23,8 +23,8 @@ public class WeatherForecast {
 
     @Override
     public String toString() {
-        return "WeatherForecast{" +
-                "weathers=" + weathers +
-                '}';
+        return "" +
+                weathers ;
+
     }
 }

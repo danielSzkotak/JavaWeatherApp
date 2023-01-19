@@ -62,6 +62,23 @@ public class SingleDayWeather {
         return rain;
     }
 
+    @Override
+    public String toString() {
+        return "SingleDayWeather{" +
+                ", date=" + date +
+                " cityName='" + cityName + '\'' +
+                ", tempInCelsius='" + tempInCelsius + '\'' +
+                ", feelsLikeTemperature='" + feelsLikeTemperature + '\'' +
+                ", iconId=" + iconId +
+                ", pressure='" + pressure + '\'' +
+                ", description='" + description + '\'' +
+                ", temp_min='" + temp_min + '\'' +
+                ", temp_max='" + temp_max + '\'' +
+                ", rain='" + rain + '\'' +
+                ", unix_time=" + unix_time +
+                '}' + "\r\n";
+    }
+
     public String getDescription() {
         return description;
     }
