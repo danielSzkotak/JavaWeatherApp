@@ -58,11 +58,12 @@ public class MainWindowController extends BaseController implements Initializabl
             loadingImage.setVisible(false);
 
             WeatherForecast weatherForecast = weatherService.getValue();
-            System.out.println(weatherForecast.toString());
+            //System.out.println(weatherForecast.toString());
 
-            /*for (int i=0; i<weatherForecast.getWeathers().size(); i++){
+            for (int i=0; i<weatherForecast.getWeathers().size(); i++){
+                System.out.println(weatherForecast.getWeathers().get(i).getDate());
                 System.out.println("City: " + city1TextField.getText());
-                //System.out.println("UnixDate: " +  weatherForecast.getWeathers().get(i).getUnix_time());
+                System.out.println("Temperature: " + weatherForecast.getWeathers().get(i).getTempInCelsius());
                 System.out.println("Icon id: " +  weatherForecast.getWeathers().get(i).getIcon());
                 System.out.println("Pressure: " +  weatherForecast.getWeathers().get(i).getPressure());
                 System.out.println("Rain: " +  weatherForecast.getWeathers().get(i).getRain());
@@ -70,9 +71,7 @@ public class MainWindowController extends BaseController implements Initializabl
                 //System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
                 System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
                 System.out.println("-----------------------------------------");
-            }*/
-               //displayWeather(weatherForecast.getWeathers());
-              //System.out.println("Temp min: " + weatherForecast.getWeathers().get(2).getTemp_min());
+            }
 
 
         });

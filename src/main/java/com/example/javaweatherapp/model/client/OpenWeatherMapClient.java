@@ -45,14 +45,19 @@ public class OpenWeatherMapClient implements WeatherClient {
     private WeatherForecast populateWeathers(){
 
         weathers.clear();
-        int oneDaySeparationStepInAPIJson=0; // EVERY 8 READING FROM API IS DAY PERIOD
+        int oneDaySeparationStepInAPIJson=0; // EVERY 8 STEP READING FROM API IS DAY PERIOD
+        LocalDate date = LocalDate.parse("2018-11-13");
+        date = date.now();
+        
         while (oneDaySeparationStepInAPIJson<=40) {
 
-            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(oneDaySeparationStepInAPIJson), LocalDate.now(), getFeelsLikeTemperature(oneDaySeparationStepInAPIJson), getWeatherIconId(oneDaySeparationStepInAPIJson), getWeatherPressure(oneDaySeparationStepInAPIJson), getRain(oneDaySeparationStepInAPIJson), getDescription(oneDaySeparationStepInAPIJson), getMinTemperature(oneDaySeparationStepInAPIJson), getMaxTemperature(oneDaySeparationStepInAPIJson), getUnixTimeStamp(oneDaySeparationStepInAPIJson));
+            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(oneDaySeparationStepInAPIJson), date, getFeelsLikeTemperature(oneDaySeparationStepInAPIJson), getWeatherIconId(oneDaySeparationStepInAPIJson), getWeatherPressure(oneDaySeparationStepInAPIJson), getRain(oneDaySeparationStepInAPIJson), getDescription(oneDaySeparationStepInAPIJson), getMinTemperature(oneDaySeparationStepInAPIJson), getMaxTemperature(oneDaySeparationStepInAPIJson), getUnixTimeStamp(oneDaySeparationStepInAPIJson));
             weathers.add(singleDayWeather);
             oneDaySeparationStepInAPIJson=oneDaySeparationStepInAPIJson+8;
+            date = date.now().plusDays(oneDaySeparationStepInAPIJson/8);
             if (oneDaySeparationStepInAPIJson==40) {
                 oneDaySeparationStepInAPIJson = 39;
+                date = date.now().plusDays(5);
             }
         }
 
