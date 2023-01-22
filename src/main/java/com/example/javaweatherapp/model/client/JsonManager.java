@@ -88,53 +88,87 @@ public class JsonManager {
         return result;
     }
 
+    private long getUnixTimeStampBeginningOfDay(int forecastDayNumber){
+
+        Calendar date = new GregorianCalendar();
+        date.add(Calendar.DAY_OF_MONTH, getDayCount(forecastDayNumber));
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+
+        long start = date.getTimeInMillis() / 1000;
+        return start;
+
+    }
+
+    private long getUnixTimeStampEndOfDay(int forecastDayNumber){
+
+        Calendar date = new GregorianCalendar();
+        date.add(Calendar.DAY_OF_MONTH, getDayCount(forecastDayNumber));
+        date.set(Calendar.HOUR_OF_DAY, 23);
+        date.set(Calendar.MINUTE, 59);
+
+        long start = date.getTimeInMillis() / 1000;
+        return start;
+
+    }
+
+    private double getMinTemperatureFromPeriod(int forecastDayNumber, long[] timeStamps, double[] temperatures){
+
+        double minTemperature = 100;
+        for (int i=0; i<40; i++){
+            if (timeStamps[i] >= getUnixTimeStampBeginningOfDay(forecastDayNumber) && timeStamps[i] <= getUnixTimeStampEndOfDay(forecastDayNumber)){
+                if (temperatures[i] < minTemperature) {
+                    minTemperature = temperatures[i];
+                }
+            }
+        }
+        return minTemperature;
+    }
+
+
+    private double[] getTemperatures(){
+
+        JsonArray APIListOfWeatherParameters = jsonObject.getJsonArray("list");
+        double temperatures[] = new double[40];
+
+        for (int i=0; i < APIListOfWeatherParameters.size(); i++){
+
+            JsonObject forecast = APIListOfWeatherParameters.getJsonObject(i);
+            JsonObject main = forecast.getJsonObject("main");
+            temperatures[i] = Math.round(main.getJsonNumber("temp").doubleValue() - 273.15);
+        }
+
+        return temperatures;
+    }
+
+    private long[] getTimeStamps(){
+
+        JsonArray APIListOfWeatherParameters = jsonObject.getJsonArray("list");
+        long timeStamps[] = new long[40];
+
+        for (int i=0; i < APIListOfWeatherParameters.size(); i++){
+
+            JsonObject forecast = APIListOfWeatherParameters.getJsonObject(i);
+            timeStamps[i] = forecast.getJsonNumber("dt").longValue();
+
+        }
+
+        return timeStamps;
+    }
+
     String extractMinTemperature(int forecastDayNumber){
 
+            return String.valueOf(getMinTemperatureFromPeriod(forecastDayNumber, getTimeStamps(), getTemperatures()));
+    }
+
+    private int getDayCount(int forecastDayNumber){
         int forecastDayCount;
         if (forecastDayNumber != 39) {
-             forecastDayCount = forecastDayNumber / 8;
+            forecastDayCount = forecastDayNumber / 8;
         } else {
             forecastDayCount = 5;
         }
-
-
-            Calendar date = new GregorianCalendar();
-            date.add(Calendar.DAY_OF_MONTH, forecastDayCount);
-            date.set(Calendar.HOUR_OF_DAY, 0);
-            date.set(Calendar.MINUTE, 0);
-
-            long start = date.getTimeInMillis() / 1000;
-
-            date.set(Calendar.HOUR_OF_DAY, 23);
-            date.set(Calendar.MINUTE, 59);
-
-            long stop = date.getTimeInMillis() / 1000;
-
-            //-------------------------------------------------------
-
-            JsonArray list = jsonObject.getJsonArray("list");
-            double temperatures[] = new double[40];
-            long timeStamps[] = new long[40];
-
-            for (int i=0; i < list.size(); i++){
-
-                JsonObject forecast = list.getJsonObject(i);
-                JsonObject main = forecast.getJsonObject("main");
-                timeStamps[i] = forecast.getJsonNumber("dt").longValue();
-                temperatures[i] = Math.round(main.getJsonNumber("temp").doubleValue() - 273.15);
-                //System.out.println(forecastDayCount + " " + i + " Temperature: " + temperatures[i]);
-            }
-            double temp = 100;
-
-            for (int i=0; i<40; i++){
-                if (timeStamps[i] >= start && timeStamps[i] <= stop){
-                    if (temperatures[i] < temp) {
-                        temp = temperatures[i];
-                    }
-                }
-            }
-            return String.valueOf(temp);
-
+        return forecastDayCount;
     }
 
     String extractMaxTemperature(int forecastDayNumber){
