@@ -187,4 +187,16 @@ public class JsonManager {
         return forecast;
     }
 
+    public String extractWeatherSnow(int forecastDayNumber) {
+
+        final JsonObject rainObj = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("snow");
+        String result = "";
+        if (rainObj == null) {
+            result = "0.0 mm";
+        } else {
+            final double snow = rainObj.getJsonNumber("3h").doubleValue();
+            result = String.valueOf(snow) + "mm";
+        }
+        return result;
+    }
 }

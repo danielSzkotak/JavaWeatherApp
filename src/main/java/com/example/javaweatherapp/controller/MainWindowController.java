@@ -54,7 +54,6 @@ public class MainWindowController extends BaseController implements Initializabl
             loadingImage.setVisible(false);
 
             WeatherForecast weatherForecast = weatherService.getValue();
-            //System.out.println(weatherForecast.toString());
 
             for (int i=0; i<weatherForecast.getWeathers().size(); i++){
                 System.out.println(weatherForecast.getWeathers().get(i).getDate());
@@ -63,6 +62,7 @@ public class MainWindowController extends BaseController implements Initializabl
                 //System.out.println("Icon id: " +  weatherForecast.getWeathers().get(i).getIcon());
                 System.out.println("Pressure: " +  weatherForecast.getWeathers().get(i).getPressure());
                 System.out.println("Rain: " +  weatherForecast.getWeathers().get(i).getRain());
+                System.out.println("Snow: " + weatherForecast.getWeathers().get(i).getSnow());
                 System.out.println("Temp min: " + weatherForecast.getWeathers().get(i).getTemp_min());
                 System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
                 System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
