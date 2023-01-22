@@ -4,11 +4,8 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 public class JsonManager {
 
@@ -20,9 +17,7 @@ public class JsonManager {
 
     String extractTemperature(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonObject main = forecast.getJsonObject("main");
+        final JsonObject main = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("main");
         double temp = main.getJsonNumber("temp").doubleValue() - 273.15;
         temp = Math.floor(temp);
         DecimalFormat df = new DecimalFormat("#");
@@ -32,9 +27,7 @@ public class JsonManager {
 
     String extractFeelsLikeTemperature(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonObject main = forecast.getJsonObject("main");
+        final JsonObject main = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("main");
         double temp = main.getJsonNumber("feels_like").doubleValue() - 273.15;
         temp = Math.round(temp);
         DecimalFormat df = new DecimalFormat("#");
@@ -44,9 +37,7 @@ public class JsonManager {
 
     int extractWeatherIconId(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonArray weather = forecast.getJsonArray("weather");
+        final JsonArray weather = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonArray("weather");
         final JsonObject weatherObj = weather.getJsonObject(0);
         final int iconId = weatherObj.getJsonNumber("id").intValue();
         return iconId;
@@ -54,9 +45,7 @@ public class JsonManager {
 
     String extractWeatherPressure(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonObject main = forecast.getJsonObject("main");
+        final JsonObject main = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("main");
         final int pressure = main.getJsonNumber("pressure").intValue();
         String result = String.valueOf(pressure);
         return result;
@@ -64,9 +53,7 @@ public class JsonManager {
 
     String extractWeatherRain(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonObject rainObj = forecast.getJsonObject("rain");
+        final JsonObject rainObj = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("rain");
         String result = "";
         if (rainObj == null) {
             result = "0.0 mm";
@@ -79,9 +66,7 @@ public class JsonManager {
 
     String extractWeatherDescription(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonArray weather = forecast.getJsonArray("weather");
+        final JsonArray weather = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonArray("weather");
         final JsonObject weatherObj = weather.getJsonObject(0);
         final JsonString description = weatherObj.getJsonString("description");
         final String result = String.valueOf(description);
@@ -161,6 +146,24 @@ public class JsonManager {
             return String.valueOf(getMinTemperatureFromPeriod(forecastDayNumber, getTimeStamps(), getTemperatures()));
     }
 
+    String extractMaxTemperature(int forecastDayNumber){
+
+        return String.valueOf(getMaxTemperatureFromPeriod(forecastDayNumber, getTimeStamps(), getTemperatures()));
+    }
+
+    private double getMaxTemperatureFromPeriod(int forecastDayNumber, long[] timeStamps, double[] temperatures) {
+
+        double maxTemperature = -100;
+        for (int i=0; i<40; i++){
+            if (timeStamps[i] >= getUnixTimeStampBeginningOfDay(forecastDayNumber) && timeStamps[i] <= getUnixTimeStampEndOfDay(forecastDayNumber)){
+                if (temperatures[i] > maxTemperature) {
+                    maxTemperature = temperatures[i];
+                }
+            }
+        }
+        return maxTemperature;
+    }
+
     private int getDayCount(int forecastDayNumber){
         int forecastDayCount;
         if (forecastDayNumber != 39) {
@@ -171,23 +174,17 @@ public class JsonManager {
         return forecastDayCount;
     }
 
-    String extractMaxTemperature(int forecastDayNumber){
-
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        final JsonObject main = forecast.getJsonObject("main");
-        double temp = main.getJsonNumber("temp_max").doubleValue() - 273.15;
-        temp = Math.round(temp);
-        DecimalFormat df = new DecimalFormat("#");
-        String formattedValue = df.format(temp);
-        return formattedValue + "°C";
-    }
 
     long extractUnixTimeStamp(int forecastDayNumber){
 
-        final JsonArray list = jsonObject.getJsonArray("list");
-        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
-        long unix_seconds = forecast.getJsonNumber("dt").longValue();
+        long unix_seconds = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonNumber("dt").longValue();
         return unix_seconds;
     }
+
+    private JsonObject getMainAPIListOfWeatherParameters(int forecastDayNumber){
+        final JsonArray list = jsonObject.getJsonArray("list");
+        final JsonObject forecast = list.getJsonObject(forecastDayNumber);
+        return forecast;
+    }
+
 }

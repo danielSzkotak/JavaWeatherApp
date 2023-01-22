@@ -14,10 +14,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.*;
 
 public class MainWindowController extends BaseController implements Initializable {
@@ -64,11 +60,11 @@ public class MainWindowController extends BaseController implements Initializabl
                 System.out.println(weatherForecast.getWeathers().get(i).getDate());
                 System.out.println("City: " + city1TextField.getText());
                 System.out.println("Temperature: " + weatherForecast.getWeathers().get(i).getTempInCelsius());
-                System.out.println("Icon id: " +  weatherForecast.getWeathers().get(i).getIcon());
+                //System.out.println("Icon id: " +  weatherForecast.getWeathers().get(i).getIcon());
                 System.out.println("Pressure: " +  weatherForecast.getWeathers().get(i).getPressure());
                 System.out.println("Rain: " +  weatherForecast.getWeathers().get(i).getRain());
                 System.out.println("Temp min: " + weatherForecast.getWeathers().get(i).getTemp_min());
-                //System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
+                System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
                 System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
                 System.out.println("-----------------------------------------");
             }
