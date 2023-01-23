@@ -90,7 +90,6 @@ public class MainWindowController extends BaseController implements Initializabl
         try {
             weatherIconImageView.setFitHeight(120);
             weatherIconImageView.setFitWidth(120);
-            System.out.println(weathers.get(0).getIcon());
             weatherIconImageView.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(0).getIcon() + ".png")));
         } catch (Exception e) {
             throw new RuntimeException(e);
