@@ -35,11 +35,12 @@ public class JsonManager {
         return formattedValue + "°C";
     }
 
-    int extractWeatherIconId(int forecastDayNumber){
+    String extractWeatherIconId(int forecastDayNumber){
 
         final JsonArray weather = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonArray("weather");
         final JsonObject weatherObj = weather.getJsonObject(0);
-        final int iconId = weatherObj.getJsonNumber("id").intValue();
+        String iconId = weatherObj.getJsonString("icon").toString();
+        iconId = iconId.substring(1, iconId.length() - 1);
         return iconId;
     }
 

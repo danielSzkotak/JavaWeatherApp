@@ -55,7 +55,7 @@ public class MainWindowController extends BaseController implements Initializabl
 
             WeatherForecast weatherForecast = weatherService.getValue();
 
-            for (int i=0; i<weatherForecast.getWeathers().size(); i++){
+            /*for (int i=0; i<weatherForecast.getWeathers().size(); i++){
                 System.out.println(weatherForecast.getWeathers().get(i).getDate());
                 System.out.println("City: " + city1TextField.getText());
                 System.out.println("Temperature: " + weatherForecast.getWeathers().get(i).getTempInCelsius());
@@ -67,7 +67,9 @@ public class MainWindowController extends BaseController implements Initializabl
                 System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
                 System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
                 System.out.println("-----------------------------------------");
-            }
+            }*/
+
+            displayWeather(weatherForecast.getWeathers());
 
 
         });
@@ -85,6 +87,14 @@ public class MainWindowController extends BaseController implements Initializabl
         temperatureLbl.setText(weathers.get(0).getTempInCelsius());
         temperatureLbl.setVisible(true);
         feelsLikeTemperatureLbl.setText("Odczuwalna: " + weathers.get(0).getFeelsLikeTemperature());
+        try {
+            weatherIconImageView.setFitHeight(120);
+            weatherIconImageView.setFitWidth(120);
+            System.out.println(weathers.get(0).getIcon());
+            weatherIconImageView.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(0).getIcon() + ".png")));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -94,13 +104,7 @@ public class MainWindowController extends BaseController implements Initializabl
         temperatureLbl.setVisible(false);
         loadingImage.setVisible(false);
         loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
-        try {
-            weatherIconImageView.setFitHeight(120);
-            weatherIconImageView.setFitWidth(120);
-            weatherIconImageView.setImage(new Image("https://openweathermap.org/img/wn/09d@2x.png"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
 
     }
 

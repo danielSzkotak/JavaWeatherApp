@@ -84,7 +84,7 @@ public class OpenWeatherMapClient implements WeatherClient {
         return jsonManager.extractFeelsLikeTemperature(forecastDayNumber);
     }
 
-    int getWeatherIconId(int forecastDayNumber) {
+    String getWeatherIconId(int forecastDayNumber) {
         return jsonManager.extractWeatherIconId(forecastDayNumber);
     }
 

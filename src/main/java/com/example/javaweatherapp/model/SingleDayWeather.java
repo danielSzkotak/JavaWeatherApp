@@ -8,7 +8,7 @@ public class SingleDayWeather {
     private final String tempInCelsius;
     private final String feelsLikeTemperature;
     private final LocalDate date;
-    private final int iconId;
+    private final String iconId;
     private final String pressure;
     private final String description;
     private final String temp_min;
@@ -20,7 +20,7 @@ public class SingleDayWeather {
 
 
 
-    public SingleDayWeather(String cityName, String tempInCelsius, LocalDate date, String feelsLikeTemperature, int iconId, String pressure, String rain, String snow,
+    public SingleDayWeather(String cityName, String tempInCelsius, LocalDate date, String feelsLikeTemperature, String iconId, String pressure, String rain, String snow,
                             String description, String temp_min, String temp_max, long unix_time) {
         this.cityName = cityName;
         this.tempInCelsius = tempInCelsius;
@@ -52,7 +52,7 @@ public class SingleDayWeather {
         return feelsLikeTemperature;
     }
 
-    public int getIcon() {
+    public String getIcon() {
         return iconId;
     }
 
