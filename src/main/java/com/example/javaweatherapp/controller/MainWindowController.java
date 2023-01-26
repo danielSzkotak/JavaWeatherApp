@@ -105,6 +105,8 @@ public class MainWindowController extends BaseController implements Initializabl
         loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
 
 
+
+
     }
 
 }

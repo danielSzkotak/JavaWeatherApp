@@ -29,6 +29,8 @@ public class APIClientService {
             JsonArray json = jsonReader.readArray();
             jsonReader.close();
 
+            System.out.println(json);
+
             final JsonObject city1 = json.getJsonObject(0);
             final double lat = city1.getJsonNumber("lat").doubleValue();
             final double lon = city1.getJsonNumber("lon").doubleValue();
