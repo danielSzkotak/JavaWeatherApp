@@ -1,5 +1,7 @@
 package com.example.javaweatherapp.model.client;
 
+import org.javatuples.Quartet;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -10,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class APIClientService {
 
@@ -29,7 +32,9 @@ public class APIClientService {
             JsonArray json = jsonReader.readArray();
             jsonReader.close();
 
-            System.out.println(json);
+            //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
+            System.out.println(json.size());
+            System.out.println(getLocationsFromApi(json));
 
             final JsonObject city1 = json.getJsonObject(0);
             final double lat = city1.getJsonNumber("lat").doubleValue();
@@ -42,6 +47,17 @@ public class APIClientService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Quartet> getLocationsFromApi(JsonArray jsonArray){
+
+        ArrayList<Quartet> locations = new ArrayList<>();
+        for (int i=0; i<jsonArray.size(); i++){
+            JsonObject city = jsonArray.getJsonObject(i);
+            locations.add(i, new Quartet<String, String, Double, Double>(city.getJsonString("name").toString(), city.getJsonString("country").toString(), city.getJsonNumber("lat").doubleValue(), city.getJsonNumber("lon").doubleValue()));
+        }
+
+        return locations;
     }
 
     public JsonReader getJsonFromAPI(URL url) throws IOException {

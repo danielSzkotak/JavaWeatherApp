@@ -15,6 +15,8 @@ import javafx.scene.image.ImageView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import org.javatuples.*;
+
 
 public class MainWindowController extends BaseController implements Initializable {
 
@@ -104,8 +106,15 @@ public class MainWindowController extends BaseController implements Initializabl
         loadingImage.setVisible(false);
         loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
 
+        //Quartet<String, String, String, String> quartet = Quartet.with("Kraków","PL","34.34234", "23.2332");
+       /* ArrayList<Quartet> location = new ArrayList<>();
 
+        location.add(new Quartet("Kraków", "PL", "23.32", "23.33"));
+        location.add(new Quartet("Londyn","GB","23.34", "23.33"));
 
+        System.out.println(location);
+
+        System.out.println(location.get(1).getValue2());*/
 
     }
 
