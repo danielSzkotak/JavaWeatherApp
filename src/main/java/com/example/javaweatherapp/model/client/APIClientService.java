@@ -13,6 +13,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class APIClientService {
 
@@ -32,7 +33,6 @@ public class APIClientService {
             JsonArray json = jsonReader.readArray();
             jsonReader.close();
 
-            //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
 
             final JsonObject city1 = json.getJsonObject(0);
             final double lat = city1.getJsonNumber("lat").doubleValue();
@@ -47,7 +47,7 @@ public class APIClientService {
         return null;
     }
 
-    public ArrayList<Quartet> getLocationsFromApi(String cityName){
+    public ArrayList<ArrayList<String>> getLocationsFromApi(String cityName){
 
         try {
             URL url = new URL("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=5&appid=" + API_KEY);
@@ -57,10 +57,11 @@ public class APIClientService {
             jsonReader.close();
 
             //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
-            ArrayList<Quartet> locations = new ArrayList<>();
+            ArrayList<ArrayList<String>> locations = new ArrayList<ArrayList<String>>();
             for (int i=0; i<json.size(); i++){
                 JsonObject city = json.getJsonObject(i);
-                locations.add(i, new Quartet<String, String, Double, Double>(city.getJsonString("name").toString(), city.getJsonString("country").toString(),city.getJsonNumber("lat").doubleValue(), city.getJsonNumber("lon").doubleValue()));
+                locations.add(i, new ArrayList<String>(Arrays.asList(city.getJsonString("name").toString(),city.getJsonString("country").toString(), city.getJsonNumber("lat").toString(), city.getJsonNumber("lon").toString())));
+
             }
 
             return locations;

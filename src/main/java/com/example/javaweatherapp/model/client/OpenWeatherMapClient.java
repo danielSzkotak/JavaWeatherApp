@@ -19,7 +19,7 @@ public class OpenWeatherMapClient implements WeatherClient {
     private JsonManager jsonManager;
     private String cityName;
     private List<SingleDayWeather> weathers = new ArrayList<>();
-    private ArrayList<Quartet> locations;
+    private ArrayList<ArrayList<String>> locations;
 
 
     @Override

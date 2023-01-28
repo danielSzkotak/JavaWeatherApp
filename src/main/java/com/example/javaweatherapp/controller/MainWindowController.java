@@ -25,7 +25,7 @@ public class MainWindowController extends BaseController implements Initializabl
     private TextField city1TextField;
 
     @FXML
-    private ComboBox<Quartet> comboBox;
+    private ComboBox<String> comboBox;
 
     @FXML
     private Label firstCityLabel;
@@ -53,9 +53,9 @@ public class MainWindowController extends BaseController implements Initializabl
     void showWeatherActionBtn() throws IOException {
 
         //GET DATA INPUT FROM INTERFACE
-        String cityName = city1TextField.getText();
+        //String cityName = city1TextField.getText();
 
-
+        String cityName = comboBox.getValue().toString();
 
         weatherService.setCityName(cityName);
 
@@ -68,7 +68,16 @@ public class MainWindowController extends BaseController implements Initializabl
 
             System.out.println(weatherForecast.getLocations());
             comboBox.getItems().clear();
-            comboBox.getItems().addAll(weatherForecast.getLocations());
+
+
+            for (int i=0; i<weatherForecast.getLocations().size(); i++){
+                    comboBox.getItems().add(weatherForecast.getLocations().get(i).get(0) + " " + weatherForecast.getLocations().get(i).get(1));
+            }
+            comboBox.show();
+
+
+            displayWeather(weatherForecast.getWeathers());
+
 
             /*for (int i=0; i<weatherForecast.getWeathers().size(); i++){
                 System.out.println(weatherForecast.getWeathers().get(i).getDate());
@@ -83,8 +92,6 @@ public class MainWindowController extends BaseController implements Initializabl
                 System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
                 System.out.println("-----------------------------------------");
             }*/
-
-            displayWeather(weatherForecast.getWeathers());
 
 
         });
