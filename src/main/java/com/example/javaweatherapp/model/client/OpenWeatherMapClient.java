@@ -2,6 +2,7 @@ package com.example.javaweatherapp.model.client;
 
 import com.example.javaweatherapp.model.SingleDayWeather;
 import com.example.javaweatherapp.model.WeatherForecast;
+import org.javatuples.Quartet;
 
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class OpenWeatherMapClient implements WeatherClient {
     private JsonManager jsonManager;
     private String cityName;
     private List<SingleDayWeather> weathers = new ArrayList<>();
+    private ArrayList<Quartet> locations;
 
 
     @Override
@@ -25,6 +27,8 @@ public class OpenWeatherMapClient implements WeatherClient {
 
         try {
             APIClientService apiClientService = new APIClientService();
+           locations = apiClientService.getLocationsFromApi(cityName);
+
             URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + apiClientService.getCityCoordinates(cityName) +
                     "&appid=" + apiClientService.getAPI_KEY() + "&lang=pl");
             JsonReader jsonReader = apiClientService.getJsonFromAPI(url);
@@ -61,7 +65,7 @@ public class OpenWeatherMapClient implements WeatherClient {
             }
         }
 
-        WeatherForecast weatherForecast = new WeatherForecast(cityName, weathers);
+        WeatherForecast weatherForecast = new WeatherForecast(cityName, weathers, locations);
         return weatherForecast;
     }
 

@@ -33,8 +33,6 @@ public class APIClientService {
             jsonReader.close();
 
             //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
-            System.out.println(json.size());
-            System.out.println(getLocationsFromApi(json));
 
             final JsonObject city1 = json.getJsonObject(0);
             final double lat = city1.getJsonNumber("lat").doubleValue();
@@ -49,15 +47,32 @@ public class APIClientService {
         return null;
     }
 
-    public ArrayList<Quartet> getLocationsFromApi(JsonArray jsonArray){
+    public ArrayList<Quartet> getLocationsFromApi(String cityName){
 
-        ArrayList<Quartet> locations = new ArrayList<>();
-        for (int i=0; i<jsonArray.size(); i++){
-            JsonObject city = jsonArray.getJsonObject(i);
-            locations.add(i, new Quartet<String, String, Double, Double>(city.getJsonString("name").toString(), city.getJsonString("country").toString(), city.getJsonNumber("lat").doubleValue(), city.getJsonNumber("lon").doubleValue()));
+        try {
+            URL url = new URL("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=5&appid=" + API_KEY);
+
+            JsonReader jsonReader = getJsonFromAPI(url);
+            JsonArray json = jsonReader.readArray();
+            jsonReader.close();
+
+            //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
+            ArrayList<Quartet> locations = new ArrayList<>();
+            for (int i=0; i<json.size(); i++){
+                JsonObject city = json.getJsonObject(i);
+                locations.add(i, new Quartet<String, String, Double, Double>(city.getJsonString("name").toString(), city.getJsonString("country").toString(),city.getJsonNumber("lat").doubleValue(), city.getJsonNumber("lon").doubleValue()));
+            }
+
+            return locations;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
 
-        return locations;
+
+
     }
 
     public JsonReader getJsonFromAPI(URL url) throws IOException {

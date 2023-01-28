@@ -7,6 +7,7 @@ import com.example.javaweatherapp.model.WeatherServiceFactory;
 import com.example.javaweatherapp.view.ViewFactory;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -22,6 +23,9 @@ public class MainWindowController extends BaseController implements Initializabl
 
     @FXML
     private TextField city1TextField;
+
+    @FXML
+    private ComboBox<Quartet> comboBox;
 
     @FXML
     private Label firstCityLabel;
@@ -47,15 +51,24 @@ public class MainWindowController extends BaseController implements Initializabl
 
     @FXML
     void showWeatherActionBtn() throws IOException {
+
         //GET DATA INPUT FROM INTERFACE
         String cityName = city1TextField.getText();
+
+
+
         weatherService.setCityName(cityName);
 
         //INVOKE BUISNESS LOGIC / MODEL
         weatherService.setOnSucceeded(workerStateEvent -> {
-            loadingImage.setVisible(false);
 
+
+            loadingImage.setVisible(false);
             WeatherForecast weatherForecast = weatherService.getValue();
+
+            System.out.println(weatherForecast.getLocations());
+            comboBox.getItems().clear();
+            comboBox.getItems().addAll(weatherForecast.getLocations());
 
             /*for (int i=0; i<weatherForecast.getWeathers().size(); i++){
                 System.out.println(weatherForecast.getWeathers().get(i).getDate());
@@ -106,15 +119,15 @@ public class MainWindowController extends BaseController implements Initializabl
         loadingImage.setVisible(false);
         loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
 
-        //Quartet<String, String, String, String> quartet = Quartet.with("Kraków","PL","34.34234", "23.2332");
-       /* ArrayList<Quartet> location = new ArrayList<>();
+       /* String[] items = {"Tarnów, PL", "Tarnów PL", "Tarnow, DE"};
+        comboBox.getItems().addAll(items);
 
-        location.add(new Quartet("Kraków", "PL", "23.32", "23.33"));
-        location.add(new Quartet("Londyn","GB","23.34", "23.33"));
+        comboBox.setOnAction(actionEvent -> {
 
-        System.out.println(location);
+            String inputFromComboBox = comboBox.getValue();
+            System.out.println(inputFromComboBox);
 
-        System.out.println(location.get(1).getValue2());*/
+        });*/
 
     }
 

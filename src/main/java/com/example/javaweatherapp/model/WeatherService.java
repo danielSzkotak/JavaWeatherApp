@@ -24,12 +24,16 @@ public class WeatherService extends Service<WeatherForecast> {
 
     @Override
     protected Task<WeatherForecast> createTask() {
-        return new Task<>() {
+        return new Task() {
             @Override
             protected WeatherForecast call() throws Exception {
 
+
                 return weatherClient.getWeather(cityName);
             }
+
         };
     }
+
+
 }

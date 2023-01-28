@@ -7,4 +7,5 @@ import java.io.IOException;
 
 public interface WeatherClient {
     WeatherForecast getWeather(String cityName) throws IOException;
+
 }
