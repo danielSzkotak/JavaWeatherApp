@@ -24,28 +24,6 @@ public class APIClientService {
         return API_KEY;
     }
 
-    public String getCityCoordinates(String cityName){
-
-        try {
-            URL url = new URL("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=5&appid=" + API_KEY);
-
-            JsonReader jsonReader = getJsonFromAPI(url);
-            JsonArray json = jsonReader.readArray();
-            jsonReader.close();
-
-
-            final JsonObject city1 = json.getJsonObject(0);
-            final double lat = city1.getJsonNumber("lat").doubleValue();
-            final double lon = city1.getJsonNumber("lon").doubleValue();
-
-            String coordinates = "lat=" + String.valueOf(lat) + "&lon=" + String.valueOf(lon);
-            return coordinates;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public ArrayList<ArrayList<String>> getLocationsFromApi(String cityName){
 
@@ -61,11 +39,8 @@ public class APIClientService {
             for (int i=0; i<json.size(); i++){
                 JsonObject city = json.getJsonObject(i);
                 locations.add(i, new ArrayList<String>(Arrays.asList(city.getJsonString("name").toString(),city.getJsonString("country").toString(), city.getJsonNumber("lat").toString(), city.getJsonNumber("lon").toString())));
-
             }
-
             return locations;
-
 
         } catch (Exception e) {
             e.printStackTrace();

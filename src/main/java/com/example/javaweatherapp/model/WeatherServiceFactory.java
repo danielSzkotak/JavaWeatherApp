@@ -11,8 +11,17 @@ public class WeatherServiceFactory {
         return new WeatherService(createWeatherClient());
     }
 
+    public static LocationService createLocationsService(){
+
+        return new LocationService(createWeatherClient());
+    }
+
+
+
     private static WeatherClient createWeatherClient(){
 
         return new OpenWeatherMapClient();
     }
+
+
 }
