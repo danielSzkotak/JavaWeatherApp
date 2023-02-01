@@ -19,6 +19,9 @@ public class MainWindowController extends BaseController implements Initializabl
 
 
     @FXML
+    private Label cityLbl;
+
+    @FXML
     private ComboBox<String> comboBox;
 
     @FXML
@@ -73,12 +76,15 @@ public class MainWindowController extends BaseController implements Initializabl
 
         });
 
+
+
         weatherService.setOnSucceeded(workerStateEvent -> {
 
             loadingImage.setVisible(false);
             WeatherForecast weatherForecast = weatherService.getValue();
 
             displayWeather(weatherForecast.getWeathers());
+            cityLbl.setText(cityName);
             comboBox.getItems().clear();
 
         });
@@ -93,6 +99,9 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     private void displayWeather(List<SingleDayWeather> weathers){
+
+        cityLbl.setVisible(true);
+
         temperatureLbl.setText(weathers.get(0).getTempInCelsius());
         temperatureLbl.setVisible(true);
         feelsLikeTemperatureLbl.setText("Odczuwalna: " + weathers.get(0).getFeelsLikeTemperature());
@@ -115,6 +124,7 @@ public class MainWindowController extends BaseController implements Initializabl
         weatherService = WeatherServiceFactory.createWeatherService();
         temperatureLbl.setVisible(false);
         loadingImage.setVisible(false);
+        cityLbl.setVisible(false);
         loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
 
     }
