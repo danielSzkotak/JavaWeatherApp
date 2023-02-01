@@ -9,11 +9,11 @@ public class WeatherService extends Service<WeatherForecast> {
 
     private final WeatherClient weatherClient;
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setCityCoordinates(String cityCoordinates) {
+        this.cityCoordinates = cityCoordinates;
     }
 
-    private String cityName;
+    private String cityCoordinates;
 
     //DEPENDENCY INVERSION - ACCEPTING WEATHERCLIENT IN CONSTRUCTOR
     public WeatherService(WeatherClient weatherClient) {
@@ -24,12 +24,15 @@ public class WeatherService extends Service<WeatherForecast> {
 
     @Override
     protected Task<WeatherForecast> createTask() {
-        return new Task<>() {
+        return new Task() {
             @Override
             protected WeatherForecast call() throws Exception {
 
-                return weatherClient.getWeather(cityName);
+                return weatherClient.getWeather(cityCoordinates);
             }
+
         };
     }
+
+
 }

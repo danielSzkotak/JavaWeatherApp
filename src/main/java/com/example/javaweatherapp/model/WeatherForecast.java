@@ -1,5 +1,8 @@
 package com.example.javaweatherapp.model;
 
+import org.javatuples.Quartet;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 

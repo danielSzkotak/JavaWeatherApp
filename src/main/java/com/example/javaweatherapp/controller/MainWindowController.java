@@ -1,12 +1,10 @@
 package com.example.javaweatherapp.controller;
 
-import com.example.javaweatherapp.model.SingleDayWeather;
-import com.example.javaweatherapp.model.WeatherForecast;
-import com.example.javaweatherapp.model.WeatherService;
-import com.example.javaweatherapp.model.WeatherServiceFactory;
+import com.example.javaweatherapp.model.*;
 import com.example.javaweatherapp.view.ViewFactory;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -16,10 +14,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+
 public class MainWindowController extends BaseController implements Initializable {
 
+
     @FXML
-    private TextField city1TextField;
+    private Label cityLbl;
+
+    @FXML
+    private ComboBox<String> comboBox;
 
     @FXML
     private Label firstCityLabel;
@@ -37,6 +40,7 @@ public class MainWindowController extends BaseController implements Initializabl
     private Label feelsLikeTemperatureLbl;
 
     private WeatherService weatherService;
+    private LocationService locationService;
 
 
     public MainWindowController(ViewFactory viewFactory, String fxmlName) {
@@ -45,32 +49,43 @@ public class MainWindowController extends BaseController implements Initializabl
 
     @FXML
     void showWeatherActionBtn() throws IOException {
+
         //GET DATA INPUT FROM INTERFACE
-        String cityName = city1TextField.getText();
-        weatherService.setCityName(cityName);
 
-        //INVOKE BUISNESS LOGIC / MODEL
+        String cityName = comboBox.getValue().toString();
+
+        locationService.setCityName(cityName);
+        locationService.setOnSucceeded(workerStateEvent -> {
+
+            ArrayList<ArrayList<String>> locations = locationService.getValue();
+
+            comboBox.getItems().clear();
+
+            for (int i=0; i<locations.size(); i++){
+                comboBox.getItems().add(locations.get(i).get(0) + " " + locations.get(i).get(1));
+            }
+            comboBox.show();
+
+            comboBox.setOnAction(actionEvent -> {
+                int cityIndexFromComboBox = comboBox.getSelectionModel().getSelectedIndex();
+                if (cityIndexFromComboBox >= 0) {
+                    weatherService.setCityCoordinates("lat=" + locations.get(cityIndexFromComboBox).get(2).toString() + "&lon=" + locations.get(cityIndexFromComboBox).get(3).toString());
+                    weatherService.restart();
+                }
+            });
+
+        });
+
+
+
         weatherService.setOnSucceeded(workerStateEvent -> {
-            loadingImage.setVisible(false);
 
+            loadingImage.setVisible(false);
             WeatherForecast weatherForecast = weatherService.getValue();
 
-            /*for (int i=0; i<weatherForecast.getWeathers().size(); i++){
-                System.out.println(weatherForecast.getWeathers().get(i).getDate());
-                System.out.println("City: " + city1TextField.getText());
-                System.out.println("Temperature: " + weatherForecast.getWeathers().get(i).getTempInCelsius());
-                //System.out.println("Icon id: " +  weatherForecast.getWeathers().get(i).getIcon());
-                System.out.println("Pressure: " +  weatherForecast.getWeathers().get(i).getPressure());
-                System.out.println("Rain: " +  weatherForecast.getWeathers().get(i).getRain());
-                System.out.println("Snow: " + weatherForecast.getWeathers().get(i).getSnow());
-                System.out.println("Temp min: " + weatherForecast.getWeathers().get(i).getTemp_min());
-                System.out.println("Temp max: " +  weatherForecast.getWeathers().get(i).getTemp_max());
-                System.out.println("Description: " +  weatherForecast.getWeathers().get(i).getDescription());
-                System.out.println("-----------------------------------------");
-            }*/
-
             displayWeather(weatherForecast.getWeathers());
-
+            cityLbl.setText(cityName);
+            comboBox.getItems().clear();
 
         });
         weatherService.setOnRunning(workerStateEvent -> {
@@ -79,14 +94,20 @@ public class MainWindowController extends BaseController implements Initializabl
             temperatureLbl.setVisible(false);
         });
 
-        weatherService.restart();
+        locationService.restart();
 
     }
 
     private void displayWeather(List<SingleDayWeather> weathers){
+
+        cityLbl.setVisible(true);
+
         temperatureLbl.setText(weathers.get(0).getTempInCelsius());
         temperatureLbl.setVisible(true);
         feelsLikeTemperatureLbl.setText("Odczuwalna: " + weathers.get(0).getFeelsLikeTemperature());
+
+        System.out.println(weathers.get(0).getPressure());
+
         try {
             weatherIconImageView.setFitHeight(120);
             weatherIconImageView.setFitWidth(120);
@@ -99,11 +120,12 @@ public class MainWindowController extends BaseController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        locationService = WeatherServiceFactory.createLocationsService();
         weatherService = WeatherServiceFactory.createWeatherService();
         temperatureLbl.setVisible(false);
         loadingImage.setVisible(false);
+        cityLbl.setVisible(false);
         loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
-
 
     }
 

@@ -2,6 +2,7 @@ package com.example.javaweatherapp.model.client;
 
 import com.example.javaweatherapp.model.SingleDayWeather;
 import com.example.javaweatherapp.model.WeatherForecast;
+import org.javatuples.Quartet;
 
 
 import java.io.IOException;
@@ -18,21 +19,23 @@ public class OpenWeatherMapClient implements WeatherClient {
     private JsonManager jsonManager;
     private String cityName;
     private List<SingleDayWeather> weathers = new ArrayList<>();
+    private ArrayList<ArrayList<String>> locations;
 
 
     @Override
-    public WeatherForecast getWeather(String cityName) throws IOException {
+    public WeatherForecast getWeather(String cityCoordinates) throws IOException {
 
         try {
             APIClientService apiClientService = new APIClientService();
-            URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + apiClientService.getCityCoordinates(cityName) +
+
+            URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + cityCoordinates +
                     "&appid=" + apiClientService.getAPI_KEY() + "&lang=pl");
             JsonReader jsonReader = apiClientService.getJsonFromAPI(url);
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
 
             this.jsonManager = new JsonManager(json);
-            this.cityName = cityName;
+            this.cityName = cityCoordinates;
 
             return populateWeathers();
 
@@ -40,6 +43,12 @@ public class OpenWeatherMapClient implements WeatherClient {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public  ArrayList<ArrayList<String>> getLocations(String cityName){
+        APIClientService apiClientService = new APIClientService();
+        return apiClientService.getLocationsFromApi(cityName);
     }
 
     private WeatherForecast populateWeathers(){
@@ -64,8 +73,6 @@ public class OpenWeatherMapClient implements WeatherClient {
         WeatherForecast weatherForecast = new WeatherForecast(cityName, weathers);
         return weatherForecast;
     }
-
-
 
 
     private String getMaxTemperature(int forecastDayNumber) {
