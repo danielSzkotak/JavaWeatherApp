@@ -47,8 +47,6 @@ public class APIClientService {
         }
         return null;
 
-
-
     }
 
     public JsonReader getJsonFromAPI(URL url) throws IOException {
@@ -57,8 +55,9 @@ public class APIClientService {
         connection.setRequestMethod("GET");
         int responseCode = connection.getResponseCode();
         if (responseCode != 200) {
-            throw new RuntimeException("ResonseCode " + responseCode);
-        } else {
+            throw new IOException(String.valueOf(responseCode));
+
+        }else {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
             String line;

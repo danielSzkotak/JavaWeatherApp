@@ -2,11 +2,12 @@ package com.example.javaweatherapp.controller;
 
 import com.example.javaweatherapp.model.*;
 import com.example.javaweatherapp.view.ViewFactory;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -50,32 +51,31 @@ public class MainWindowController extends BaseController implements Initializabl
     @FXML
     void showWeatherActionBtn() throws IOException {
 
-        //GET DATA INPUT FROM INTERFACE
+        String cityName = comboBox.getValue();
 
-        String cityName = comboBox.getValue().toString();
+        if (InternetCheck.isInternetReachable()){
 
-        locationService.setCityName(cityName);
-        locationService.setOnSucceeded(workerStateEvent -> {
+            if (comboBox.getValue() != null) {
 
-            ArrayList<ArrayList<String>> locations = locationService.getValue();
-
-            comboBox.getItems().clear();
-
-            for (int i=0; i<locations.size(); i++){
-                comboBox.getItems().add(locations.get(i).get(0) + " " + locations.get(i).get(1));
-            }
-            comboBox.show();
-
-            comboBox.setOnAction(actionEvent -> {
-                int cityIndexFromComboBox = comboBox.getSelectionModel().getSelectedIndex();
-                if (cityIndexFromComboBox >= 0) {
-                    weatherService.setCityCoordinates("lat=" + locations.get(cityIndexFromComboBox).get(2).toString() + "&lon=" + locations.get(cityIndexFromComboBox).get(3).toString());
-                    weatherService.restart();
+                if (!comboBox.getValue().isEmpty()){
+                    locationService.setCityName(cityName);
+                    locationService.restart();
                 }
-            });
 
-        });
+                setOnSucceededWeatherFetch();
 
+                locationService.setOnFailed(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent workerStateEvent) {
+                        Throwable exception = workerStateEvent.getSource().getException();
+                        System.out.println(exception);
+                    }
+                });
+            }
+
+        } else {
+            System.out.println("Nieee ma netaaa!");
+        }
 
 
         weatherService.setOnSucceeded(workerStateEvent -> {
@@ -88,13 +88,50 @@ public class MainWindowController extends BaseController implements Initializabl
             comboBox.getItems().clear();
 
         });
+
         weatherService.setOnRunning(workerStateEvent -> {
 
             loadingImage.setVisible(true);
             temperatureLbl.setVisible(false);
         });
 
-        locationService.restart();
+
+    }
+
+    private void setOnSucceededWeatherFetch(){
+
+        locationService.setOnSucceeded(workerStateEvent -> {
+
+            ArrayList<ArrayList<String>> locations = locationService.getValue();
+
+            if (locations.isEmpty()){
+                System.out.println("Wprowadź poprawną nazwę miasta");
+            } else {
+                populateInputBoxWithLocations(locations);
+                getWeatherForSelectedLocations(locations);
+            }
+
+        });
+    }
+
+    private void populateInputBoxWithLocations(ArrayList<ArrayList<String>> locations){
+        comboBox.getItems().clear();
+
+        for (int i=0; i<locations.size(); i++){
+            comboBox.getItems().add(locations.get(i).get(0) + " " + locations.get(i).get(1));
+        }
+        comboBox.show();
+    }
+
+    private void getWeatherForSelectedLocations(ArrayList<ArrayList<String>> locations){
+
+        comboBox.setOnAction(actionEvent -> {
+            int cityIndexFromComboBox = comboBox.getSelectionModel().getSelectedIndex();
+            if (cityIndexFromComboBox >= 0) {
+                weatherService.setCityCoordinates("lat=" + locations.get(cityIndexFromComboBox).get(2).toString() + "&lon=" + locations.get(cityIndexFromComboBox).get(3).toString());
+                weatherService.restart();
+            }
+        });
 
     }
 
@@ -120,12 +157,13 @@ public class MainWindowController extends BaseController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        locationService = WeatherServiceFactory.createLocationsService();
-        weatherService = WeatherServiceFactory.createWeatherService();
-        temperatureLbl.setVisible(false);
-        loadingImage.setVisible(false);
-        cityLbl.setVisible(false);
-        loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
+            locationService = WeatherServiceFactory.createLocationsService();
+            weatherService = WeatherServiceFactory.createWeatherService();
+            temperatureLbl.setVisible(false);
+            loadingImage.setVisible(false);
+            cityLbl.setVisible(false);
+            loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
+
 
     }
 
