@@ -5,11 +5,20 @@ import com.example.javaweatherapp.model.WeatherForecast;
 import org.javatuples.Quartet;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
@@ -20,17 +29,30 @@ public class OpenWeatherMapClient implements WeatherClient {
     private String cityName;
     private List<SingleDayWeather> weathers = new ArrayList<>();
     private ArrayList<ArrayList<String>> locations;
+    private final String API_KEY = "d6d4d66e455fb01b0b1b210628a1dd91";
 
 
     @Override
     public WeatherForecast getWeather(String cityCoordinates) throws IOException {
 
+        APIClientService apiClientService = new APIClientService();
+        URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + cityCoordinates +
+                "&appid=" + apiClientService.getAPI_KEY() + "&lang=pl");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
         try {
-            APIClientService apiClientService = new APIClientService();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+            String result = response.toString();
+            JsonReader jsonReader = Json.createReader(new StringReader(result));
 
-            URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + cityCoordinates +
-                    "&appid=" + apiClientService.getAPI_KEY() + "&lang=pl");
-            JsonReader jsonReader = apiClientService.getJsonFromAPI(url);
             JsonObject json = jsonReader.readObject();
             jsonReader.close();
 
@@ -39,16 +61,52 @@ public class OpenWeatherMapClient implements WeatherClient {
 
             return populateWeathers();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new IOException("Nie można pobrać pogody dla wskazanej lokalizacji z API OPenWeatherMap", e);
         }
-        return null;
+
     }
 
     @Override
-    public  ArrayList<ArrayList<String>> getLocations(String cityName){
-        APIClientService apiClientService = new APIClientService();
-        return apiClientService.getLocationsFromApi(cityName);
+    public ArrayList<ArrayList<String>> getLocations(String cityName) throws IOException, ConnectException {
+
+        URL url = new URL("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=5&appid=" + API_KEY);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+            String result = response.toString();
+            JsonReader jsonReader = Json.createReader(new StringReader(result));
+
+
+            JsonArray json = jsonReader.readArray();
+            jsonReader.close();
+
+            //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
+            ArrayList<ArrayList<String>> locations = new ArrayList<ArrayList<String>>();
+            for (int i = 0; i < json.size(); i++) {
+                JsonObject city = json.getJsonObject(i);
+                locations.add(i, new ArrayList<String>(Arrays.asList(city.getJsonString("name").toString(), city.getJsonString("country").toString(), city.getJsonNumber("lat").toString(), city.getJsonNumber("lon").toString())));
+            }
+            return locations;
+
+        } catch (ConnectException e) {
+            throw new IOException("Brak połączenia  z internetem", e);
+
+        } catch (IOException e) {
+            throw new IOException("Nie można pobrać lokalizacji z API OpenWeatherMap", e);
+        }
+
     }
 
     private WeatherForecast populateWeathers(){
