@@ -26,8 +26,6 @@ public class OpenWeatherMapClient implements WeatherClient {
     private JsonManager jsonManager;
     private String cityName;
     private List<SingleDayWeather> weathers = new ArrayList<>();
-   // private ArrayList<ArrayList<String>> locations;
-    //Locations locations = new Locations();
     private final String API_KEY = "d6d4d66e455fb01b0b1b210628a1dd91";
 
 
@@ -36,45 +34,63 @@ public class OpenWeatherMapClient implements WeatherClient {
 
         URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + cityCoordinates +
                 "&appid=" + API_KEY + "&lang=pl");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            reader.close();
-            String result = response.toString();
-            JsonReader jsonReader = Json.createReader(new StringReader(result));
-
-            JsonObject json = jsonReader.readObject();
-            jsonReader.close();
-
+            JsonObject json = getJsonFromAPI(url).readObject();
             this.jsonManager = new JsonManager(json);
             this.cityName = cityCoordinates;
-
             return populateWeathers();
+
+        } catch (ConnectException e) {
+            throw new IOException("Brak połączenia z internetem", e);
 
         } catch (IOException e) {
             throw new IOException("Nie można pobrać pogody dla wskazanej lokalizacji z API OPenWeatherMap", e);
+        } finally {
+            getJsonFromAPI(url).close();
         }
 
     }
 
     @Override
-    public Locations getLocations(String cityName) throws IOException, ConnectException {
+    public Locations getLocations(String cityName) throws IOException {
 
         URL url = new URL("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=5&appid=" + API_KEY);
+
+        try {
+            JsonArray jsonArray = getJsonFromAPI(url).readArray();
+            return populateLocationsFromJson(jsonArray);
+
+        } catch (ConnectException e) {
+            throw new IOException("Brak połączenia z internetem", e);
+
+        } catch (IOException e) {
+            throw new IOException("Nie można pobrać lokalizacji z API OpenWeatherMap", e);
+        } finally {
+            getJsonFromAPI(url).close();
+        }
+
+    }
+
+    private Locations populateLocationsFromJson(JsonArray jsonArray){
+
+        ArrayList<ArrayList<String>> loc = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject city = jsonArray.getJsonObject(i);
+            loc.add(i, new ArrayList<String>(Arrays.asList(city.getJsonString("name").toString(), city.getJsonString("country").toString(), city.getJsonNumber("lat").toString(), city.getJsonNumber("lon").toString())));
+        }
+        Locations locations = new Locations();
+        locations.setLocations(loc);
+
+        return locations;
+    }
+
+    private JsonReader getJsonFromAPI(URL url) throws IOException {
+
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
-
-        try {
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
@@ -85,30 +101,7 @@ public class OpenWeatherMapClient implements WeatherClient {
             reader.close();
             String result = response.toString();
             JsonReader jsonReader = Json.createReader(new StringReader(result));
-
-
-            JsonArray json = jsonReader.readArray();
-            jsonReader.close();
-
-            //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
-            ArrayList<ArrayList<String>> loc = new ArrayList<ArrayList<String>>();
-
-            for (int i = 0; i < json.size(); i++) {
-                JsonObject city = json.getJsonObject(i);
-                loc.add(i, new ArrayList<String>(Arrays.asList(city.getJsonString("name").toString(), city.getJsonString("country").toString(), city.getJsonNumber("lat").toString(), city.getJsonNumber("lon").toString())));
-            }
-
-            Locations locations = new Locations();
-            locations.setLocations(loc);
-
-            return locations;
-
-        } catch (ConnectException e) {
-            throw new IOException("Brak połączenia  z internetem", e);
-
-        } catch (IOException e) {
-            throw new IOException("Nie można pobrać lokalizacji z API OpenWeatherMap", e);
-        }
+            return jsonReader;
 
     }
 
