@@ -1,6 +1,7 @@
 package com.example.javaweatherapp.controller;
 
 import com.example.javaweatherapp.model.*;
+import com.example.javaweatherapp.model.client.Locations;
 import com.example.javaweatherapp.view.ViewFactory;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -52,7 +53,7 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     @FXML
-    void showWeatherActionBtn() throws IOException {
+    void showWeatherActionBtn() {
 
         String cityName = comboBox.getValue();
 
@@ -60,11 +61,11 @@ public class MainWindowController extends BaseController implements Initializabl
             locationService.setCityName(cityName);
             locationService.setOnSucceeded(workerStateEvent -> {
 
-                ArrayList<ArrayList<String>> locations = locationService.getValue();
-                populateInputBoxWithLocations(locations);
-                getWeatherForSelectedLocations(locations);
+                Locations locations = locationService.getValue();
+                populateInputBoxWithLocations(locations.getLocations());
+                getWeatherForSelectedLocations(locations.getLocations());
 
-                if (locations.isEmpty()) {
+                if (locations.getLocations().isEmpty()) {
                     errorlbl.setText("Wprowadź poprawną nazwe miasta");
                     comboBox.hide();
                     errorlbl.setVisible(true);

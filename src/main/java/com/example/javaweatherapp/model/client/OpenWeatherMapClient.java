@@ -2,7 +2,6 @@ package com.example.javaweatherapp.model.client;
 
 import com.example.javaweatherapp.model.SingleDayWeather;
 import com.example.javaweatherapp.model.WeatherForecast;
-import org.javatuples.Quartet;
 
 
 import java.io.BufferedReader;
@@ -12,7 +11,6 @@ import java.io.StringReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,16 +26,16 @@ public class OpenWeatherMapClient implements WeatherClient {
     private JsonManager jsonManager;
     private String cityName;
     private List<SingleDayWeather> weathers = new ArrayList<>();
-    private ArrayList<ArrayList<String>> locations;
+   // private ArrayList<ArrayList<String>> locations;
+    //Locations locations = new Locations();
     private final String API_KEY = "d6d4d66e455fb01b0b1b210628a1dd91";
 
 
     @Override
     public WeatherForecast getWeather(String cityCoordinates) throws IOException {
 
-        APIClientService apiClientService = new APIClientService();
         URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?" + cityCoordinates +
-                "&appid=" + apiClientService.getAPI_KEY() + "&lang=pl");
+                "&appid=" + API_KEY + "&lang=pl");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(5000);
@@ -68,7 +66,7 @@ public class OpenWeatherMapClient implements WeatherClient {
     }
 
     @Override
-    public ArrayList<ArrayList<String>> getLocations(String cityName) throws IOException, ConnectException {
+    public Locations getLocations(String cityName) throws IOException, ConnectException {
 
         URL url = new URL("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=5&appid=" + API_KEY);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -93,11 +91,16 @@ public class OpenWeatherMapClient implements WeatherClient {
             jsonReader.close();
 
             //TRY TO ITERATE THRU JSON ARRAY TO GET QUARTETS
-            ArrayList<ArrayList<String>> locations = new ArrayList<ArrayList<String>>();
+            ArrayList<ArrayList<String>> loc = new ArrayList<ArrayList<String>>();
+
             for (int i = 0; i < json.size(); i++) {
                 JsonObject city = json.getJsonObject(i);
-                locations.add(i, new ArrayList<String>(Arrays.asList(city.getJsonString("name").toString(), city.getJsonString("country").toString(), city.getJsonNumber("lat").toString(), city.getJsonNumber("lon").toString())));
+                loc.add(i, new ArrayList<String>(Arrays.asList(city.getJsonString("name").toString(), city.getJsonString("country").toString(), city.getJsonNumber("lat").toString(), city.getJsonNumber("lon").toString())));
             }
+
+            Locations locations = new Locations();
+            locations.setLocations(loc);
+
             return locations;
 
         } catch (ConnectException e) {
