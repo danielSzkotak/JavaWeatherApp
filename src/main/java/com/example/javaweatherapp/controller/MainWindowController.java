@@ -1,12 +1,14 @@
 package com.example.javaweatherapp.controller;
 
 import com.example.javaweatherapp.model.*;
+import com.example.javaweatherapp.model.client.Locations;
 import com.example.javaweatherapp.view.ViewFactory;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -20,6 +22,9 @@ public class MainWindowController extends BaseController implements Initializabl
 
     @FXML
     private Label cityLbl;
+
+    @FXML
+    private Label errorlbl;
 
     @FXML
     private ComboBox<String> comboBox;
@@ -48,54 +53,76 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     @FXML
-    void showWeatherActionBtn() throws IOException {
+    void showWeatherActionBtn() {
 
-        //GET DATA INPUT FROM INTERFACE
+        String cityName = comboBox.getValue();
 
-        String cityName = comboBox.getValue().toString();
+        if ((cityName != null) && (!cityName.isEmpty())){
+            locationService.setCityName(cityName);
+            locationService.setOnSucceeded(workerStateEvent -> {
 
-        locationService.setCityName(cityName);
-        locationService.setOnSucceeded(workerStateEvent -> {
+                Locations locations = locationService.getValue();
+                populateInputBoxWithLocations(locations.getLocations());
+                getWeatherForSelectedLocations(locations.getLocations());
 
-            ArrayList<ArrayList<String>> locations = locationService.getValue();
-
-            comboBox.getItems().clear();
-
-            for (int i=0; i<locations.size(); i++){
-                comboBox.getItems().add(locations.get(i).get(0) + " " + locations.get(i).get(1));
-            }
-            comboBox.show();
-
-            comboBox.setOnAction(actionEvent -> {
-                int cityIndexFromComboBox = comboBox.getSelectionModel().getSelectedIndex();
-                if (cityIndexFromComboBox >= 0) {
-                    weatherService.setCityCoordinates("lat=" + locations.get(cityIndexFromComboBox).get(2).toString() + "&lon=" + locations.get(cityIndexFromComboBox).get(3).toString());
-                    weatherService.restart();
+                if (locations.getLocations().isEmpty()) {
+                    errorlbl.setText("Wprowadź poprawną nazwe miasta");
+                    comboBox.hide();
+                    errorlbl.setVisible(true);
                 }
             });
 
+            locationService.setOnFailed(workerStateEvent -> {
+                Exception ex = (Exception) locationService.getException();
+                System.out.println(ex.getMessage());
+            });
+
+            locationService.restart();
+            weatherService.setOnSucceeded(workerStateEvent -> {
+
+                errorlbl.setVisible(false);
+                loadingImage.setVisible(false);
+                WeatherForecast weatherForecast = weatherService.getValue();
+                displayWeather(weatherForecast.getWeathers());
+                cityLbl.setText(cityName);
+                comboBox.getItems().clear();
+            });
+
+            weatherService.setOnFailed(workerStateEvent -> {
+                Exception ex = (Exception) weatherService.getException();
+                System.out.println(ex.getMessage());
+                loadingImage.setVisible(false);
+            });
+
+            weatherService.setOnRunning(workerStateEvent -> {
+                loadingImage.setVisible(true);
+                temperatureLbl.setVisible(false);
+
+            });
+        } else {
+            errorlbl.setText("Wprowadź poprawną nazwe miasta");
+            errorlbl.setVisible(true);
+        }
+
+    }
+
+
+    private void populateInputBoxWithLocations(ArrayList<ArrayList<String>> locations){
+        comboBox.getItems().clear();
+        for (int i=0; i<locations.size(); i++){
+            comboBox.getItems().add(locations.get(i).get(0) + " " + locations.get(i).get(1));
+        }
+        comboBox.show();
+    }
+
+    private void getWeatherForSelectedLocations(ArrayList<ArrayList<String>> locations){
+        comboBox.setOnAction(actionEvent -> {
+            int cityIndexFromComboBox = comboBox.getSelectionModel().getSelectedIndex();
+            if (cityIndexFromComboBox >= 0) {
+                weatherService.setCityCoordinates("lat=" + locations.get(cityIndexFromComboBox).get(2).toString() + "&lon=" + locations.get(cityIndexFromComboBox).get(3).toString());
+                weatherService.restart();
+            }
         });
-
-
-
-        weatherService.setOnSucceeded(workerStateEvent -> {
-
-            loadingImage.setVisible(false);
-            WeatherForecast weatherForecast = weatherService.getValue();
-
-            displayWeather(weatherForecast.getWeathers());
-            cityLbl.setText(cityName);
-            comboBox.getItems().clear();
-
-        });
-        weatherService.setOnRunning(workerStateEvent -> {
-
-            loadingImage.setVisible(true);
-            temperatureLbl.setVisible(false);
-        });
-
-        locationService.restart();
-
     }
 
     private void displayWeather(List<SingleDayWeather> weathers){
@@ -105,8 +132,6 @@ public class MainWindowController extends BaseController implements Initializabl
         temperatureLbl.setText(weathers.get(0).getTempInCelsius());
         temperatureLbl.setVisible(true);
         feelsLikeTemperatureLbl.setText("Odczuwalna: " + weathers.get(0).getFeelsLikeTemperature());
-
-        System.out.println(weathers.get(0).getPressure());
 
         try {
             weatherIconImageView.setFitHeight(120);
@@ -120,13 +145,13 @@ public class MainWindowController extends BaseController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        locationService = WeatherServiceFactory.createLocationsService();
-        weatherService = WeatherServiceFactory.createWeatherService();
-        temperatureLbl.setVisible(false);
-        loadingImage.setVisible(false);
-        cityLbl.setVisible(false);
-        loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
-
+            locationService = WeatherServiceFactory.createLocationsService();
+            weatherService = WeatherServiceFactory.createWeatherService();
+            temperatureLbl.setVisible(false);
+            loadingImage.setVisible(false);
+            cityLbl.setVisible(false);
+            errorlbl.setVisible(false);
+            loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
     }
 
 }

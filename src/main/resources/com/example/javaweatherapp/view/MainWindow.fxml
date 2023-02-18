@@ -16,5 +16,6 @@
       <Label fx:id="feelsLikeTemperatureLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="201.0" prefHeight="17.0" prefWidth="109.0" />
       <ComboBox fx:id="comboBox" editable="true" layoutX="75.0" layoutY="105.0" prefWidth="150.0" />
       <Label fx:id="cityLbl" alignment="CENTER" layoutX="102.0" layoutY="76.0" prefHeight="17.0" prefWidth="109.0" text="Label" />
+      <Label fx:id="errorlbl" layoutX="273.0" layoutY="492.0" prefHeight="17.0" prefWidth="455.0" text="Label" />
    </children>
 </AnchorPane>
