@@ -5,12 +5,15 @@ import com.example.javaweatherapp.controller.MainWindowController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
 public class ViewFactory {
+
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     public ViewFactory() {
     }
@@ -33,11 +36,35 @@ public class ViewFactory {
             return;
         }
 
+
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
+
+        parent.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+
+        parent.setOnMouseDragged(event -> {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        });
+
+
         stage.setTitle(title);
         stage.setScene(scene);
         stage.show();
+
+    }
+
+    public void closeStage(Stage stageToCLose){
+        stageToCLose.close();
+
+    }
+
+    public void minimizeStage(Stage stageToCLose){
+        stageToCLose.setIconified(true);
 
     }
 }

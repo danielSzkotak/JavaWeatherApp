@@ -4,13 +4,17 @@ import com.example.javaweatherapp.model.*;
 import com.example.javaweatherapp.model.client.Locations;
 import com.example.javaweatherapp.view.ViewFactory;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,6 +26,12 @@ public class MainWindowController extends BaseController implements Initializabl
 
     @FXML
     private Label cityLbl;
+
+    @FXML
+    private Button closeBtn;
+
+    @FXML
+    private Button minimizeBtn;
 
     @FXML
     private Label errorlbl;
@@ -50,6 +60,19 @@ public class MainWindowController extends BaseController implements Initializabl
 
     public MainWindowController(ViewFactory viewFactory, String fxmlName) {
         super(viewFactory, fxmlName);
+    }
+
+    @FXML
+    void closeActionBtn() {
+        Stage stage = (Stage) cityLbl.getScene().getWindow();
+        viewFactory.closeStage(stage);
+
+    }
+
+    @FXML
+    void minimizeActionBtn() {
+        Stage stage = (Stage) cityLbl.getScene().getWindow();
+        viewFactory.minimizeStage(stage);
     }
 
     @FXML

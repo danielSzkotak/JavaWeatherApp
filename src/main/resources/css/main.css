@@ -1,3 +1,14 @@
 .main {
 -fx-background-color: #fdfdfd;
 }
+
+.windowBtn {
+-fx-background-color: #fdfdfd;
+-fx-border-color: black;
+-fx-border-radius: 7px;
+-fx-border-width: 2px;
+}
+
+/* letter spacing
+-fx-letter-spacing: ....
+*/
