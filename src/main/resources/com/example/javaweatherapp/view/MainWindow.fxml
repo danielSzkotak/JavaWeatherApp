@@ -5,21 +5,20 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="564.0" prefWidth="1001.0" styleClass="main" stylesheets="@../../../../css/main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="703.0" prefWidth="1315.0" styleClass="main" stylesheets="@../../../../css/main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="firstCityLabel" alignment="CENTER" layoutX="79.0" layoutY="16.0" lineSpacing="0.2" prefHeight="50.0" prefWidth="180.0" text="Witaj ż" textAlignment="CENTER">
+      <Label fx:id="firstCityLabel" layoutX="25.0" layoutY="26.0" prefHeight="50.0" prefWidth="150.0" text="Witaj" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
          <font>
-            <Font name="Bookshelf Symbol 7" size="40.0" />
+            <Font name="Consolas" size="44.0" />
          </font></Label>
-      <Button layoutX="119.0" layoutY="143.0" mnemonicParsing="false" onAction="#showWeatherActionBtn" text="Sprawdź" />
       <Label fx:id="temperatureLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="115.0" layoutY="188.0" prefHeight="17.0" prefWidth="69.0" />
-      <ImageView fx:id="loadingImage" fitHeight="65.0" fitWidth="61.0" layoutX="119.0" layoutY="173.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="weatherIconImageView" fitHeight="65.0" fitWidth="61.0" layoutX="95.0" layoutY="250.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="feelsLikeTemperatureLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="201.0" prefHeight="17.0" prefWidth="109.0" />
-      <ComboBox fx:id="comboBox" editable="true" layoutX="75.0" layoutY="105.0" prefWidth="150.0" />
-      <Label fx:id="cityLbl" alignment="CENTER" layoutX="102.0" layoutY="76.0" prefHeight="17.0" prefWidth="109.0" text="Label" />
+      <ImageView fx:id="loadingImage" fitHeight="65.0" fitWidth="61.0" layoutX="422.0" layoutY="379.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="weatherIconImageView" fitHeight="65.0" fitWidth="61.0" layoutX="452.0" layoutY="298.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="feelsLikeTemperatureLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="273.0" layoutY="579.0" prefHeight="17.0" prefWidth="109.0" />
+      <Label fx:id="cityLbl" alignment="CENTER" layoutX="61.0" layoutY="322.0" prefHeight="17.0" prefWidth="109.0" text="Label" />
       <Label fx:id="errorlbl" layoutX="273.0" layoutY="492.0" prefHeight="17.0" prefWidth="455.0" text="Label" />
       <Button fx:id="closeBtn" alignment="CENTER" layoutX="955.0" layoutY="24.0" mnemonicParsing="false" onAction="#closeActionBtn" prefHeight="36.0" prefWidth="35.0" styleClass="windowBtn" text="X" textAlignment="CENTER" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
          <font>
@@ -30,5 +29,12 @@
             <Font name="Berlin Sans FB Demi Bold" size="15.0" />
          </font>
       </Button>
+      <ImageView fx:id="searchIcon" fitHeight="50.0" fitWidth="50.0" layoutX="25.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="100.0" />
+      <HBox layoutX="90.0" layoutY="100.0" prefHeight="50.0" prefWidth="487.0" AnchorPane.leftAnchor="90.0">
+         <children>
+            <ComboBox fx:id="comboBox" editable="true" onKeyPressed="#getWeatherOnEnterPressed" opacity="0.85" prefHeight="50.0" prefWidth="405.0" />
+            <Button fx:id="getWeatherBtn" mnemonicParsing="false" onAction="#showWeatherActionBtn" prefHeight="49.0" prefWidth="90.0" styleClass="getWeatherButton" text="Szukaj" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

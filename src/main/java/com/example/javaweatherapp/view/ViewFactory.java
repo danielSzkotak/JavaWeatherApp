@@ -5,6 +5,8 @@ import com.example.javaweatherapp.controller.MainWindowController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -57,6 +59,7 @@ public class ViewFactory {
         stage.show();
 
     }
+
 
     public void closeStage(Stage stageToCLose){
         stageToCLose.close();

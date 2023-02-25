@@ -9,6 +9,66 @@
 -fx-border-width: 2px;
 }
 
-/* letter spacing
--fx-letter-spacing: ....
-*/
+
+.combo-box> .arrow-button > .arrow {
+-fx-background-color: #F4F4F4;
+-fx-padding: 0;
+}
+
+.combo-box> .arrow-button {
+-fx-background-color: #F4F4F4;
+
+}
+
+
+.combo-box {
+-fx-font-family: "Consolas";
+-fx-font-color: #343434;
+-fx-font-size: 15pt;
+-fx-font-weight: bold;
+-fx-border-width: 2px 0px 2px 2px;
+-fx-background-color: #F4F4F4;
+-fx-border-color: #818181;
+-fx-background-radius: 5 0 0 5;
+-fx-border-radius: 5 0 0 5;
+
+
+}
+
+.combo-box:focused {
+-fx-background-color: #F4F4F4;
+-fx-border-color: #343434;
+-fx-border-width: 2px 0px 2px 2px;
+-fx-border-radius: 5 0 0 5;
+
+}
+
+
+
+.combo-box .text-input{
+-fx-background-color: #F4F4F4;
+}
+
+.combo-box-popup .list-view {
+ -fx-font-weight: normal;
+ -fx-background-color: #F4F4F4;
+}
+
+.getWeatherButton {
+-fx-background-color: #515151;
+-fx-text-fill: #F5F5F5;
+-fx-font-family: "Consolas";
+-fx-font-size: 14pt;
+-fx-font-weight: bold;
+-fx-border-width: 2px 2px 0px 2px;
+-fx-background-radius: 0 5 5 0;
+-fx-border-radius: 0 5 5 0;
+-fx-transition: -fx-background-color 0.5s ease;
+
+}
+
+.getWeatherButton:hover {
+-fx-background-color: #404040;
+
+}
+
