@@ -15,13 +15,14 @@ public class SingleDayWeather {
     private final String temp_max;
     private final String rain;
     private final String snow;
+    private final String wind;
+    private final String humidity;
     private final long unix_time;
 
 
 
 
-    public SingleDayWeather(String cityName, String tempInCelsius, LocalDate date, String feelsLikeTemperature, String iconId, String pressure, String rain, String snow,
-                            String description, String temp_min, String temp_max, long unix_time) {
+    public SingleDayWeather(String cityName, String tempInCelsius, LocalDate date, String feelsLikeTemperature, String iconId, String pressure, String rain, String snow, String wind, String humidity, String description, String temp_min, String temp_max, long unix_time) {
         this.cityName = cityName;
         this.tempInCelsius = tempInCelsius;
         this.date = date;
@@ -30,10 +31,12 @@ public class SingleDayWeather {
         this.pressure = pressure;
         this.rain = rain;
         this.snow = snow;
+        this.humidity = humidity;
         this.description = description;
         this.temp_min = temp_min;
         this.temp_max = temp_max;
         this.unix_time = unix_time;
+        this.wind = wind;
     }
 
     public String getCityName() {
@@ -60,12 +63,20 @@ public class SingleDayWeather {
         return pressure;
     }
 
+    public String getHumidity() {
+        return humidity;
+    }
+
     public String getRain() {
         return rain;
     }
 
     public String getSnow() {
         return snow;
+    }
+
+    public String getWind() {
+        return wind;
     }
 
     @Override
@@ -81,6 +92,7 @@ public class SingleDayWeather {
                 ", temp_min='" + temp_min + '\'' +
                 ", temp_max='" + temp_max + '\'' +
                 ", rain='" + rain + '\'' +
+                ", wind='" + wind + '\'' +
                 ", unix_time=" + unix_time +
                 '}' + "\r\n";
     }

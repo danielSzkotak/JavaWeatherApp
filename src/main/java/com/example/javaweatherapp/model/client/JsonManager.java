@@ -52,6 +52,26 @@ public class JsonManager {
         return result;
     }
 
+    public String extractHumidity(int forecastDayNumber) {
+        final JsonObject main = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("main");
+        final int humidity = main.getJsonNumber("humidity").intValue();
+        String result = String.valueOf(humidity);
+        return result;
+    }
+
+    String extractWeatherWind(int forecastDayNumber){
+
+        final JsonObject windObj = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("wind");
+        String result = "";
+        if (windObj == null) {
+            result = "0.0 m/s";
+        } else {
+            final double wind = windObj.getJsonNumber("speed").doubleValue();
+            result = String.valueOf(wind) + " m/s";
+        }
+        return result;
+    }
+
     String extractWeatherRain(int forecastDayNumber){
 
         final JsonObject rainObj = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonObject("rain");
@@ -60,7 +80,7 @@ public class JsonManager {
             result = "0.0 mm";
         } else {
             final double rain = rainObj.getJsonNumber("3h").doubleValue();
-            result = String.valueOf(rain) + "mm";
+            result = String.valueOf(rain) + " mm";
         }
         return result;
     }
@@ -70,7 +90,8 @@ public class JsonManager {
         final JsonArray weather = getMainAPIListOfWeatherParameters(forecastDayNumber).getJsonArray("weather");
         final JsonObject weatherObj = weather.getJsonObject(0);
         final JsonString description = weatherObj.getJsonString("description");
-        final String result = String.valueOf(description);
+        String result = deleteQuotations(String.valueOf(description));
+        result = capitalFirstLetter(result);
         return result;
     }
 
@@ -200,4 +221,16 @@ public class JsonManager {
         }
         return result;
     }
+
+    String deleteQuotations (String input){
+        String modifiedString = input.replace("\"", "");
+        return modifiedString;
+    }
+
+    String capitalFirstLetter (String input){
+        String modifiedString = input.substring(0, 1).toUpperCase() + input.substring(1);
+        return modifiedString;
+    }
+
+
 }

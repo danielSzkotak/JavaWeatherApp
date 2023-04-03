@@ -6,6 +6,7 @@ import com.example.javaweatherapp.view.ViewFactory;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -16,11 +17,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -29,6 +32,24 @@ public class MainWindowController extends BaseController implements Initializabl
 
     @FXML
     private Label cityLbl;
+
+    @FXML
+    private Label currentDateLbl;
+
+    @FXML
+    private Label weatherDescriptionLbl;
+
+    @FXML
+    private Label humidityLbl;
+
+    @FXML
+    private Label windLbl;
+
+    @FXML
+    private Label pressureLbl;
+
+    @FXML
+    private Pane leftPane;
 
     @FXML
     private Button getWeatherBtn;
@@ -56,6 +77,9 @@ public class MainWindowController extends BaseController implements Initializabl
 
     @FXML
     private ImageView loadingImage;
+
+    @FXML
+    private Label rainLbl1;
 
     @FXML
     private ImageView weatherIconImageView;
@@ -101,6 +125,7 @@ public class MainWindowController extends BaseController implements Initializabl
     @FXML
     void showWeatherActionBtn() {
 
+
         this.cityName = comboBox.getEditor().getText();
         if ((cityName != null) && (!cityName.isEmpty())){
 
@@ -109,12 +134,7 @@ public class MainWindowController extends BaseController implements Initializabl
 
                 Locations locations = locationService.getValue();
                 populateInputBoxWithLocations(locations.getLocations());
-
-
                 getWeatherForSelectedLocations(locations.getLocations());
-
-
-
 
                 if (locations.getLocations().isEmpty()) {
                     errorlbl.setText("Wprowadź poprawną nazwe miasta");
@@ -135,7 +155,6 @@ public class MainWindowController extends BaseController implements Initializabl
                 loadingImage.setVisible(false);
                 WeatherForecast weatherForecast = weatherService.getValue();
                 displayWeather(weatherForecast.getWeathers());
-                cityLbl.setText(cityName);
                 comboBox.getItems().clear();
             });
 
@@ -180,19 +199,32 @@ public class MainWindowController extends BaseController implements Initializabl
 
     private void displayWeather(List<SingleDayWeather> weathers){
 
-        cityLbl.setVisible(true);
-
         temperatureLbl.setText(weathers.get(0).getTempInCelsius());
         temperatureLbl.setVisible(true);
         feelsLikeTemperatureLbl.setText("Odczuwalna: " + weathers.get(0).getFeelsLikeTemperature());
+        weatherDescriptionLbl.setText(weathers.get(0).getDescription());
+        pressureLbl.setText("Ciśnienie: " + weathers.get(0).getPressure() + "hPa");
+        humidityLbl.setText("Wilgotność: " + weathers.get(0).getHumidity() + "%");
+        windLbl.setText("Wiatr: " + weathers.get(0).getWind());
+        rainLbl1.setText("Deszcz: " + weathers.get(0).getRain());
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("pl"));
+        String dayAndMonth = weathers.get(0).getDate().format(formatter);
+        cityLbl.setText(makeFirstLetterCapital(cityName) + ", " + dayAndMonth);
+        cityLbl.setVisible(true);
+
 
         try {
-            weatherIconImageView.setFitHeight(120);
-            weatherIconImageView.setFitWidth(120);
             weatherIconImageView.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(0).getIcon() + ".png")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    String makeFirstLetterCapital(String input){
+        String modifiedString = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+        return modifiedString;
     }
 
     @Override
@@ -204,9 +236,6 @@ public class MainWindowController extends BaseController implements Initializabl
             searchIcon.setImage(new Image(getClass().getResourceAsStream("/icons/search.jpg")));
             comboBox.setPromptText("Wprowadź nazwę miejscowości");
 
-            if (comboBox.isShowing()) {
-                System.out.println("pokazało sie");
-            }
 
 
             temperatureLbl.setVisible(false);

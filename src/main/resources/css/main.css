@@ -43,8 +43,6 @@
 
 }
 
-
-
 .combo-box .text-input{
 -fx-background-color: #F4F4F4;
 }
@@ -69,6 +67,12 @@
 
 .getWeatherButton:hover {
 -fx-background-color: #404040;
+}
 
+.pane {
+-fx-border-color: #868686;
+-fx-border-width: 2px;
+-fx-border-radius: 5;
+-fx-border-style: solid;
 }
 

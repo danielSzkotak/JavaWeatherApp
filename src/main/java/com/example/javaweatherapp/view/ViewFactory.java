@@ -2,6 +2,7 @@ package com.example.javaweatherapp.view;
 
 import com.example.javaweatherapp.controller.BaseController;
 import com.example.javaweatherapp.controller.MainWindowController;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -40,6 +41,8 @@ public class ViewFactory {
 
 
         Scene scene = new Scene(parent);
+
+
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
 

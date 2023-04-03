@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="703.0" prefWidth="1315.0" styleClass="main" stylesheets="@../../../../css/main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
@@ -14,12 +17,8 @@
          <font>
             <Font name="Consolas" size="44.0" />
          </font></Label>
-      <Label fx:id="temperatureLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="115.0" layoutY="188.0" prefHeight="17.0" prefWidth="69.0" />
-      <ImageView fx:id="loadingImage" fitHeight="65.0" fitWidth="61.0" layoutX="422.0" layoutY="379.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="weatherIconImageView" fitHeight="65.0" fitWidth="61.0" layoutX="452.0" layoutY="298.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="feelsLikeTemperatureLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="273.0" layoutY="579.0" prefHeight="17.0" prefWidth="109.0" />
-      <Label fx:id="cityLbl" alignment="CENTER" layoutX="61.0" layoutY="322.0" prefHeight="17.0" prefWidth="109.0" text="Label" />
-      <Label fx:id="errorlbl" layoutX="273.0" layoutY="492.0" prefHeight="17.0" prefWidth="455.0" text="Label" />
+      <ImageView fx:id="loadingImage" fitHeight="65.0" fitWidth="61.0" layoutX="946.0" layoutY="396.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="errorlbl" layoutX="458.0" layoutY="656.0" prefHeight="17.0" prefWidth="401.0" text="Label" />
       <Button fx:id="closeBtn" alignment="CENTER" layoutX="955.0" layoutY="24.0" mnemonicParsing="false" onAction="#closeActionBtn" prefHeight="36.0" prefWidth="35.0" styleClass="windowBtn" text="X" textAlignment="CENTER" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
          <font>
             <Font name="Berlin Sans FB" size="15.0" />
@@ -30,11 +29,118 @@
          </font>
       </Button>
       <ImageView fx:id="searchIcon" fitHeight="50.0" fitWidth="50.0" layoutX="25.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="100.0" />
-      <HBox layoutX="90.0" layoutY="100.0" prefHeight="50.0" prefWidth="487.0" AnchorPane.leftAnchor="90.0">
+      <HBox layoutX="90.0" layoutY="100.0" prefHeight="50.0" prefWidth="560.0" AnchorPane.leftAnchor="90.0">
          <children>
-            <ComboBox fx:id="comboBox" editable="true" onKeyPressed="#getWeatherOnEnterPressed" opacity="0.85" prefHeight="50.0" prefWidth="405.0" />
-            <Button fx:id="getWeatherBtn" mnemonicParsing="false" onAction="#showWeatherActionBtn" prefHeight="49.0" prefWidth="90.0" styleClass="getWeatherButton" text="Szukaj" />
+            <ComboBox fx:id="comboBox" editable="true" onKeyPressed="#getWeatherOnEnterPressed" opacity="0.85" prefHeight="50.0" prefWidth="465.0" />
+            <Button fx:id="getWeatherBtn" mnemonicParsing="false" onAction="#showWeatherActionBtn" prefHeight="49.0" prefWidth="96.0" styleClass="getWeatherButton" text="Szukaj" />
          </children>
       </HBox>
+      <Pane fx:id="leftPane" layoutX="33.0" layoutY="172.0" prefHeight="466.0" prefWidth="645.0" styleClass="pane" AnchorPane.leftAnchor="33.0" AnchorPane.topAnchor="172.0">
+         <children>
+            <VBox prefHeight="203.0" prefWidth="645.0">
+               <children>
+                  <Label fx:id="cityLbl" contentDisplay="CENTER" prefHeight="32.0" prefWidth="625.0" text="Miasto">
+                     <font>
+                        <Font name="Consolas" size="28.0" />
+                     </font>
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets left="20.0" top="15.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox prefHeight="219.0" prefWidth="625.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <VBox prefHeight="146.0" prefWidth="110.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="temperatureLbl" contentDisplay="CENTER" prefHeight="88.0" prefWidth="185.0" text="4oC" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font name="Consolas" size="60.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets top="12.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="feelsLikeTemperatureLbl" contentDisplay="CENTER" prefHeight="32.0" prefWidth="186.0" text="Odczuwalna" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font name="Consolas Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="146.0" prefWidth="164.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ImageView fx:id="weatherIconImageView" fitHeight="78.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets top="15.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                              <Label fx:id="weatherDescriptionLbl" prefHeight="31.0" prefWidth="269.0" text="Label" VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font name="Consolas Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox prefHeight="146.0" prefWidth="122.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="pressureLbl" prefHeight="34.0" prefWidth="215.0" text="Ciśnienie: 1024 hPa">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="Consolas Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="humidityLbl" prefHeight="28.0" prefWidth="213.0" text="Wilgotność: 60%">
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="Consolas Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="windLbl" prefHeight="28.0" prefWidth="216.0" text="Wiatr 0.54 m/s">
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="Consolas Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="rainLbl1" layoutX="10.0" layoutY="101.0" prefHeight="28.0" prefWidth="216.0" text="Opady: ">
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="Consolas Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" top="10.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </children></Pane>
    </children>
 </AnchorPane>
