@@ -22,7 +22,7 @@ public class JsonManager {
         temp = Math.floor(temp);
         DecimalFormat df = new DecimalFormat("#");
         String formattedValue = df.format(temp);
-        return formattedValue + "°C";
+        return formattedValue + "°";
     }
 
     String extractFeelsLikeTemperature(int forecastDayNumber){
@@ -32,7 +32,7 @@ public class JsonManager {
         temp = Math.round(temp);
         DecimalFormat df = new DecimalFormat("#");
         String formattedValue = df.format(temp);
-        return formattedValue + "°C";
+        return formattedValue + "°";
     }
 
     String extractWeatherIconId(int forecastDayNumber){

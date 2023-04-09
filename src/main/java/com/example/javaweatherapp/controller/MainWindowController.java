@@ -43,6 +43,36 @@ public class MainWindowController extends BaseController implements Initializabl
     private Label humidityLbl;
 
     @FXML
+    private Label dateLbl_1;
+
+    @FXML
+    private Label dateLbl_2;
+
+    @FXML
+    private Label dateLbl_3;
+
+    @FXML
+    private Label dateLbl_4;
+
+    @FXML
+    private Label dateLbl_5;
+
+    @FXML
+    private Label dayNameLbl_1;
+
+    @FXML
+    private Label dayNameLbl_2;
+
+    @FXML
+    private Label dayNameLbl_3;
+
+    @FXML
+    private Label dayNameLbl_4;
+
+    @FXML
+    private Label dayNameLbl_5;
+
+    @FXML
     private Label windLbl;
 
     @FXML
@@ -70,10 +100,40 @@ public class MainWindowController extends BaseController implements Initializabl
     private ComboBox<String> comboBox;
 
     @FXML
+    private ImageView weatherIconImageView_1;
+
+    @FXML
+    private ImageView weatherIconImageView_2;
+
+    @FXML
+    private ImageView weatherIconImageView_3;
+
+    @FXML
+    private ImageView weatherIconImageView_4;
+
+    @FXML
+    private ImageView weatherIconImageView_5;
+
+    @FXML
     private Label firstCityLabel;
 
     @FXML
     private Label temperatureLbl;
+
+    @FXML
+    private Label forecastTemp_1;
+
+    @FXML
+    private Label forecastTemp_2;
+
+    @FXML
+    private Label forecastTemp_3;
+
+    @FXML
+    private Label forecastTemp_4;
+
+    @FXML
+    private Label forecastTemp_5;
 
     @FXML
     private ImageView loadingImage;
@@ -208,15 +268,40 @@ public class MainWindowController extends BaseController implements Initializabl
         windLbl.setText("Wiatr: " + weathers.get(0).getWind());
         rainLbl1.setText("Deszcz: " + weathers.get(0).getRain());
 
+        DateTimeFormatter forecastDayNameFormatter = DateTimeFormatter.ofPattern("E", new Locale("pl"));
+        dayNameLbl_1.setText(makeFirstLetterCapital(weathers.get(1).getDate().format(forecastDayNameFormatter)));
+        dayNameLbl_2.setText(makeFirstLetterCapital(weathers.get(2).getDate().format(forecastDayNameFormatter)));
+        dayNameLbl_3.setText(makeFirstLetterCapital(weathers.get(3).getDate().format(forecastDayNameFormatter)));
+        dayNameLbl_4.setText(makeFirstLetterCapital(weathers.get(4).getDate().format(forecastDayNameFormatter)));
+        dayNameLbl_5.setText(makeFirstLetterCapital(weathers.get(5).getDate().format(forecastDayNameFormatter)));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("pl"));
+        DateTimeFormatter forecastFormatter = DateTimeFormatter.ofPattern("d MMM", new Locale("pl"));
+        dateLbl_1.setText(weathers.get(1).getDate().format(forecastFormatter));
+        dateLbl_2.setText(weathers.get(2).getDate().format(forecastFormatter));
+        dateLbl_3.setText(weathers.get(3).getDate().format(forecastFormatter));
+        dateLbl_4.setText(weathers.get(4).getDate().format(forecastFormatter));
+        dateLbl_5.setText(weathers.get(5).getDate().format(forecastFormatter));
+
+        forecastTemp_1.setText(weathers.get(1).getTempInCelsius() + "/" + weathers.get(1).getFeelsLikeTemperature());
+        forecastTemp_2.setText(weathers.get(2).getTempInCelsius() + "/" + weathers.get(1).getFeelsLikeTemperature());
+        forecastTemp_3.setText(weathers.get(3).getTempInCelsius() + "/" + weathers.get(1).getFeelsLikeTemperature());
+        forecastTemp_4.setText(weathers.get(4).getTempInCelsius() + "/" + weathers.get(1).getFeelsLikeTemperature());
+        forecastTemp_5.setText(weathers.get(5).getTempInCelsius() + "/" + weathers.get(1).getFeelsLikeTemperature());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE d MMMM", new Locale("pl"));
         String dayAndMonth = weathers.get(0).getDate().format(formatter);
+
         cityLbl.setText(makeFirstLetterCapital(cityName) + ", " + dayAndMonth);
         cityLbl.setVisible(true);
 
 
         try {
             weatherIconImageView.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(0).getIcon() + ".png")));
+            weatherIconImageView_1.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(1).getIcon() + ".png")));
+            weatherIconImageView_2.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(2).getIcon() + ".png")));
+            weatherIconImageView_3.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(3).getIcon() + ".png")));
+            weatherIconImageView_4.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(4).getIcon() + ".png")));
+            weatherIconImageView_5.setImage(new Image(getClass().getResourceAsStream("/icons/iconList/" + weathers.get(5).getIcon() + ".png")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -235,8 +320,6 @@ public class MainWindowController extends BaseController implements Initializabl
 
             searchIcon.setImage(new Image(getClass().getResourceAsStream("/icons/search.jpg")));
             comboBox.setPromptText("Wprowadź nazwę miejscowości");
-
-
 
             temperatureLbl.setVisible(false);
             loadingImage.setVisible(false);
