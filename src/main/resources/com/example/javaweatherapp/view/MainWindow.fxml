@@ -13,7 +13,8 @@
 
 <AnchorPane prefHeight="703.0" prefWidth="1280.0" styleClass="main" stylesheets="@../../../../css/main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="loadingImage" fitHeight="65.0" fitWidth="61.0" layoutX="946.0" layoutY="396.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="320.0" AnchorPane.leftAnchor="610.0" />
+      <ImageView fx:id="loadingImage1" fitHeight="65.0" fitWidth="61.0" layoutX="946.0" layoutY="396.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="300.0" />
+      <ImageView fx:id="loadingImage2" fitHeight="65.0" fitWidth="61.0" layoutX="310.0" layoutY="328.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="280.0" AnchorPane.rightAnchor="300.0" />
       <Label fx:id="errorlbl" alignment="CENTER" layoutX="350.0" layoutY="656.0" prefHeight="23.0" prefWidth="598.0" text="Label" textAlignment="CENTER" textFill="#da3c3c" AnchorPane.bottomAnchor="40.0">
          <font>
             <Font name="Consolas" size="20.0" />

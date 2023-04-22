@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -218,7 +217,10 @@ public class MainWindowController extends BaseController implements Initializabl
     private Label forecastTemp_25;
 
     @FXML
-    private ImageView loadingImage;
+    private ImageView loadingImage1;
+
+    @FXML
+    private ImageView loadingImage2;
 
     @FXML
     private Label rainLbl1;
@@ -314,7 +316,7 @@ public class MainWindowController extends BaseController implements Initializabl
             weatherService.setOnSucceeded(workerStateEvent -> {
 
                 errorlbl.setVisible(false);
-                loadingImage.setVisible(false);
+                loadingImage2.setVisible(false);
                 rightWelcomeLbl.setVisible(false);
                 rightWeatherVbox.setVisible(true);
                 WeatherForecast weatherForecast = weatherService.getValue();
@@ -325,11 +327,12 @@ public class MainWindowController extends BaseController implements Initializabl
             weatherService.setOnFailed(workerStateEvent -> {
                 Exception ex = (Exception) weatherService.getException();
                 System.out.println(ex.getMessage());
-                loadingImage.setVisible(false);
+                loadingImage2.setVisible(false);
             });
 
             weatherService.setOnRunning(workerStateEvent -> {
-                loadingImage.setVisible(true);
+                rightWelcomeLbl.setVisible(false);
+                loadingImage2.setVisible(true);
 
             });
         } else {
@@ -343,7 +346,6 @@ public class MainWindowController extends BaseController implements Initializabl
     void showWeatherActionBtn() {
 
         this.cityName = comboBox.getEditor().getText();
-
         if ((cityName != null) && (!cityName.isEmpty())){
 
             locationService.setCityName(cityName);
@@ -369,7 +371,7 @@ public class MainWindowController extends BaseController implements Initializabl
             weatherService.setOnSucceeded(workerStateEvent -> {
 
                 errorlbl.setVisible(false);
-                loadingImage.setVisible(false);
+                loadingImage1.setVisible(false);
                 leftWelcomeLbl.setVisible(false);
                 leftWeatherVbox.setVisible(true);
                 WeatherForecast weatherForecast = weatherService.getValue();
@@ -380,11 +382,12 @@ public class MainWindowController extends BaseController implements Initializabl
             weatherService.setOnFailed(workerStateEvent -> {
                 Exception ex = (Exception) weatherService.getException();
                 System.out.println(ex.getMessage());
-                loadingImage.setVisible(false);
+                loadingImage1.setVisible(false);
             });
 
             weatherService.setOnRunning(workerStateEvent -> {
-                loadingImage.setVisible(true);
+                leftWelcomeLbl.setVisible(false);
+                loadingImage1.setVisible(true);
 
 
             });
@@ -392,10 +395,7 @@ public class MainWindowController extends BaseController implements Initializabl
             errorlbl.setText("Wprowadź poprawną nazwę miasta");
             errorlbl.setVisible(true);
         }
-
     }
-
-
 
     private void populateInputBoxWithLocations(ArrayList<ArrayList<String>> locations){
         comboBox.getItems().clear();
@@ -555,11 +555,12 @@ public class MainWindowController extends BaseController implements Initializabl
             leftWelcomeLbl.setVisible(true);
             rightWelcomeLbl.setVisible(true);
 
-            loadingImage.setVisible(false);
+            loadingImage1.setVisible(false);
+            loadingImage2.setVisible(false);
             errorlbl.setVisible(false);
 
-
-            loadingImage.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
+            loadingImage1.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
+            loadingImage2.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
     }
 
 }
