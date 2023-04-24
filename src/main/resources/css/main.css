@@ -1,3 +1,90 @@
 .main {
 -fx-background-color: #fdfdfd;
 }
+
+.windowBtn {
+-fx-background-color: #fdfdfd;
+-fx-border-color: black;
+-fx-border-radius: 7px;
+-fx-border-width: 2px;
+}
+
+
+.combo-box> .arrow-button > .arrow {
+-fx-background-color: #F4F4F4;
+-fx-padding: 0;
+}
+
+.combo-box> .arrow-button {
+-fx-background-color: #F4F4F4;
+
+}
+
+
+.combo-box {
+-fx-font-family: "Consolas";
+-fx-font-color: #343434;
+-fx-font-size: 15pt;
+-fx-font-weight: bold;
+-fx-border-width: 2px 0px 2px 2px;
+-fx-background-color: #F4F4F4;
+-fx-border-color: #818181;
+-fx-background-radius: 5 0 0 5;
+-fx-border-radius: 5 0 0 5;
+
+
+}
+
+.combo-box:focused {
+-fx-background-color: #F4F4F4;
+-fx-border-color: #343434;
+-fx-border-width: 2px 0px 2px 2px;
+-fx-border-radius: 5 0 0 5;
+
+}
+
+.combo-box .text-input{
+-fx-background-color: #F4F4F4;
+}
+
+.combo-box-popup .list-view {
+ -fx-font-weight: normal;
+ -fx-background-color: #F4F4F4;
+}
+
+.getWeatherButton {
+-fx-background-color: #515151;
+-fx-text-fill: #F5F5F5;
+-fx-font-family: "Consolas";
+-fx-font-size: 14pt;
+-fx-font-weight: bold;
+-fx-border-width: 2px 2px 0px 2px;
+-fx-background-radius: 0 5 5 0;
+-fx-border-radius: 0 5 5 0;
+-fx-transition: -fx-background-color 0.5s ease;
+
+}
+
+.getWeatherButton:hover {
+-fx-background-color: #404040;
+}
+
+.pane {
+-fx-border-color: #868686;
+-fx-border-width: 2px;
+-fx-border-radius: 5;
+-fx-border-style: solid;
+}
+
+.paneForecast {
+    -fx-border-color: #c9c9c9; /* sets the border color to black */
+    -fx-border-width: 0 2px 0 0; /* sets the border width to 1 pixel */
+    -fx-border-style: solid; /* sets the border style to solid */
+    -fx-border-insets: 0 0 0 5px; /* sets the left inset to 5 pixels */
+}
+
+.myImageView {
+    -fx-background-position: center center; /* centers the background image */
+    -fx-background-repeat: no-repeat; /* prevents the image from repeating */
+    -fx-background-size: contain; /* scales the image to fit within the ImageView */
+}

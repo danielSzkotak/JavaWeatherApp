@@ -114,7 +114,7 @@ public class OpenWeatherMapClient implements WeatherClient {
         
         while (oneDaySeparationStepInAPIJson<=40) {
 
-            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(oneDaySeparationStepInAPIJson), date, getFeelsLikeTemperature(oneDaySeparationStepInAPIJson), getWeatherIconId(oneDaySeparationStepInAPIJson), getWeatherPressure(oneDaySeparationStepInAPIJson), getRain(oneDaySeparationStepInAPIJson),getSnow(oneDaySeparationStepInAPIJson), getDescription(oneDaySeparationStepInAPIJson), getMinTemperature(oneDaySeparationStepInAPIJson), getMaxTemperature(oneDaySeparationStepInAPIJson), getUnixTimeStamp(oneDaySeparationStepInAPIJson));
+            SingleDayWeather singleDayWeather = new SingleDayWeather(cityName, getTemperature(oneDaySeparationStepInAPIJson), date, getFeelsLikeTemperature(oneDaySeparationStepInAPIJson), getWeatherIconId(oneDaySeparationStepInAPIJson), getWeatherPressure(oneDaySeparationStepInAPIJson), getRain(oneDaySeparationStepInAPIJson), getSnow(oneDaySeparationStepInAPIJson), getWind(oneDaySeparationStepInAPIJson), getHumidity(oneDaySeparationStepInAPIJson), getDescription(oneDaySeparationStepInAPIJson), getMinTemperature(oneDaySeparationStepInAPIJson), getMaxTemperature(oneDaySeparationStepInAPIJson), getUnixTimeStamp(oneDaySeparationStepInAPIJson));
             weathers.add(singleDayWeather);
             oneDaySeparationStepInAPIJson=oneDaySeparationStepInAPIJson+8;
             date = date.now().plusDays(oneDaySeparationStepInAPIJson/8);
@@ -153,11 +153,17 @@ public class OpenWeatherMapClient implements WeatherClient {
         return jsonManager.extractWeatherPressure(forecastDayNumber);
     }
 
+    String getHumidity(int forecastDayNumber) {
+        return jsonManager.extractHumidity(forecastDayNumber);
+    }
+
     String getRain(int forecastDayNumber) {
         return jsonManager.extractWeatherRain(forecastDayNumber);
     }
 
     String getSnow(int forecastDayNumber) { return jsonManager.extractWeatherSnow(forecastDayNumber); }
+
+    String getWind(int forecastDayNumber) { return jsonManager.extractWeatherWind(forecastDayNumber); }
 
     String getDescription(int forecastDayNumber) {
         return jsonManager.extractWeatherDescription(forecastDayNumber);
