@@ -256,8 +256,6 @@ public class MainWindowController extends BaseController implements Initializabl
     private LocationService locationService;
     private String cityName;
 
-    int cityIndexFromComboBox;
-
 
     public MainWindowController(ViewFactory viewFactory, String fxmlName) {
 
@@ -280,55 +278,93 @@ public class MainWindowController extends BaseController implements Initializabl
     @FXML
     void getWeatherOnEnterPressed(KeyEvent event) {
 
-        if (event.getCode() == KeyCode.ENTER){
-            showWeatherActionBtn();
-        }
+        if (event.getCode() == KeyCode.ENTER) {
+            if (comboBox.isFocused()) {
+                showWeatherActionBtn();
+            }
+            if (comboBox2.isFocused()) {
+                showWeatherActionBtn2();
+            }
 
+        }
+    }
+
+
+    @FXML
+    void showWeatherActionBtn() {
+
+        this.cityName = comboBox.getEditor().getText();
+        if ((cityName != null) && (!cityName.isEmpty())) {
+
+            locationService.setCityName(cityName);
+            getLocationOnSucceed();
+            getLocationOnFailed();
+            locationService.restart();
+            getWeatherOnSucceeded();
+            getWeatherOnFailed();
+
+            weatherService.setOnRunning(workerStateEvent -> {
+                leftWelcomeLbl.setVisible(false);
+                loadingImage1.setVisible(true);
+            });
+
+        } else {
+            errorlbl.setText("Wprowadź poprawną nazwę miasta");
+            errorlbl.setVisible(true);
+        }
+    }
+
+    private void getLocationOnSucceed() {
+        locationService.setOnSucceeded(workerStateEvent -> {
+            Locations locations = locationService.getValue();
+            populateInputBoxWithLocations(locations.getLocations());
+            getWeatherForSelectedLocations(locations.getLocations());
+            if (locations.getLocations().isEmpty()) {
+                errorlbl.setText("Wprowadź poprawną nazwę miasta");
+                comboBox.hide();
+                errorlbl.setVisible(true);
+            }
+        });
+    }
+
+    private void getLocationOnFailed() {
+        locationService.setOnFailed(workerStateEvent -> {
+            Exception ex = (Exception) locationService.getException();
+            System.out.println(ex.getMessage());
+        });
+    }
+
+    private void getWeatherOnSucceeded() {
+        weatherService.setOnSucceeded(workerStateEvent -> {
+            errorlbl.setVisible(false);
+            loadingImage1.setVisible(false);
+            leftWelcomeLbl.setVisible(false);
+            leftWeatherVbox.setVisible(true);
+            WeatherForecast weatherForecast = weatherService.getValue();
+            displayWeather1(weatherForecast.getWeathers());
+            comboBox.getItems().clear();
+        });
+    }
+
+    private void getWeatherOnFailed() {
+        weatherService.setOnFailed(workerStateEvent -> {
+            Exception ex = (Exception) weatherService.getException();
+            System.out.println(ex.getMessage());
+            loadingImage1.setVisible(false);
+        });
     }
 
     @FXML
     void showWeatherActionBtn2() {
         this.cityName = comboBox2.getEditor().getText();
-
-        if ((cityName != null) && (!cityName.isEmpty())){
-
+        if ((cityName != null) && (!cityName.isEmpty())) {
             locationService.setCityName(cityName);
-            locationService.setOnSucceeded(workerStateEvent -> {
 
-                Locations locations = locationService.getValue();
-
-                populateInputBox2WithLocations(locations.getLocations());
-                getWeatherForSelectedLocations2(locations.getLocations());
-
-                if (locations.getLocations().isEmpty()) {
-                    errorlbl.setText("Wprowadź poprawną nazwę miasta");
-                    comboBox2.hide();
-                    errorlbl.setVisible(true);
-                }
-            });
-
-            locationService.setOnFailed(workerStateEvent -> {
-                Exception ex = (Exception) locationService.getException();
-                System.out.println(ex.getMessage());
-            });
-
+            getLocationOnSucceeded2();
+            getLocationOnFailed2();
             locationService.restart();
-            weatherService.setOnSucceeded(workerStateEvent -> {
-
-                errorlbl.setVisible(false);
-                loadingImage2.setVisible(false);
-                rightWelcomeLbl.setVisible(false);
-                rightWeatherVbox.setVisible(true);
-                WeatherForecast weatherForecast = weatherService.getValue();
-                displayWeather2(weatherForecast.getWeathers());
-                comboBox2.getItems().clear();
-            });
-
-            weatherService.setOnFailed(workerStateEvent -> {
-                Exception ex = (Exception) weatherService.getException();
-                System.out.println(ex.getMessage());
-                loadingImage2.setVisible(false);
-            });
+            getWeatherOnSucceeded2();
+            getWeatherOnFailed2();
 
             weatherService.setOnRunning(workerStateEvent -> {
                 rightWelcomeLbl.setVisible(false);
@@ -342,81 +378,67 @@ public class MainWindowController extends BaseController implements Initializabl
 
     }
 
-    @FXML
-    void showWeatherActionBtn() {
+    private void getLocationOnSucceeded2() {
+        locationService.setOnSucceeded(workerStateEvent -> {
 
-        this.cityName = comboBox.getEditor().getText();
-        if ((cityName != null) && (!cityName.isEmpty())){
+            Locations locations = locationService.getValue();
+            populateInputBox2WithLocations(locations.getLocations());
+            getWeatherForSelectedLocations2(locations.getLocations());
 
-            locationService.setCityName(cityName);
-            locationService.setOnSucceeded(workerStateEvent -> {
-
-                Locations locations = locationService.getValue();
-                populateInputBoxWithLocations(locations.getLocations());
-                getWeatherForSelectedLocations(locations.getLocations());
-
-                if (locations.getLocations().isEmpty()) {
-                    errorlbl.setText("Wprowadź poprawną nazwę miasta");
-                    comboBox.hide();
-                    errorlbl.setVisible(true);
-                }
-            });
-
-            locationService.setOnFailed(workerStateEvent -> {
-                Exception ex = (Exception) locationService.getException();
-                System.out.println(ex.getMessage());
-            });
-
-            locationService.restart();
-            weatherService.setOnSucceeded(workerStateEvent -> {
-
-                errorlbl.setVisible(false);
-                loadingImage1.setVisible(false);
-                leftWelcomeLbl.setVisible(false);
-                leftWeatherVbox.setVisible(true);
-                WeatherForecast weatherForecast = weatherService.getValue();
-                displayWeather1(weatherForecast.getWeathers());
-                comboBox.getItems().clear();
-            });
-
-            weatherService.setOnFailed(workerStateEvent -> {
-                Exception ex = (Exception) weatherService.getException();
-                System.out.println(ex.getMessage());
-                loadingImage1.setVisible(false);
-            });
-
-            weatherService.setOnRunning(workerStateEvent -> {
-                leftWelcomeLbl.setVisible(false);
-                loadingImage1.setVisible(true);
-
-
-            });
-        } else {
-            errorlbl.setText("Wprowadź poprawną nazwę miasta");
-            errorlbl.setVisible(true);
-        }
+            if (locations.getLocations().isEmpty()) {
+                errorlbl.setText("Wprowadź poprawną nazwę miasta");
+                comboBox2.hide();
+                errorlbl.setVisible(true);
+            }
+        });
     }
 
-    private void populateInputBoxWithLocations(ArrayList<ArrayList<String>> locations){
+    private void getLocationOnFailed2() {
+        locationService.setOnFailed(workerStateEvent -> {
+            Exception ex = (Exception) locationService.getException();
+            System.out.println(ex.getMessage());
+        });
+    }
+
+    private void getWeatherOnSucceeded2() {
+        weatherService.setOnSucceeded(workerStateEvent -> {
+            errorlbl.setVisible(false);
+            loadingImage2.setVisible(false);
+            rightWelcomeLbl.setVisible(false);
+            rightWeatherVbox.setVisible(true);
+            WeatherForecast weatherForecast = weatherService.getValue();
+            displayWeather2(weatherForecast.getWeathers());
+            comboBox2.getItems().clear();
+        });
+    }
+
+    private void getWeatherOnFailed2() {
+        weatherService.setOnFailed(workerStateEvent -> {
+            Exception ex = (Exception) weatherService.getException();
+            System.out.println(ex.getMessage());
+            loadingImage2.setVisible(false);
+        });
+    }
+
+    private void populateInputBoxWithLocations(ArrayList<ArrayList<String>> locations) {
         comboBox.getItems().clear();
-        for (int i=0; i<locations.size(); i++){
+        for (int i = 0; i < locations.size(); i++) {
             comboBox.getItems().add(locations.get(i).get(0) + " " + locations.get(i).get(1));
         }
         comboBox.show();
     }
 
-    private void populateInputBox2WithLocations(ArrayList<ArrayList<String>> locations){
+    private void populateInputBox2WithLocations(ArrayList<ArrayList<String>> locations) {
         comboBox2.getItems().clear();
-        for (int i=0; i<locations.size(); i++){
+        for (int i = 0; i < locations.size(); i++) {
             comboBox2.getItems().add(locations.get(i).get(0) + " " + locations.get(i).get(1));
         }
         comboBox2.show();
     }
 
-    private void getWeatherForSelectedLocations(ArrayList<ArrayList<String>> locations){
+    private void getWeatherForSelectedLocations(ArrayList<ArrayList<String>> locations) {
 
         comboBox.setOnAction(actionEvent -> {
-
             int cityIndexFromComboBox = comboBox.getSelectionModel().getSelectedIndex();
             if (cityIndexFromComboBox >= 0) {
                 weatherService.setCityCoordinates("lat=" + locations.get(cityIndexFromComboBox).get(2).toString() + "&lon=" + locations.get(cityIndexFromComboBox).get(3).toString());
@@ -425,7 +447,7 @@ public class MainWindowController extends BaseController implements Initializabl
         });
     }
 
-    private void getWeatherForSelectedLocations2(ArrayList<ArrayList<String>> locations){
+    private void getWeatherForSelectedLocations2(ArrayList<ArrayList<String>> locations) {
 
         comboBox2.setOnAction(actionEvent -> {
 
@@ -437,7 +459,7 @@ public class MainWindowController extends BaseController implements Initializabl
         });
     }
 
-    private void displayWeather1(List<SingleDayWeather> weathers){
+    private void displayWeather1(List<SingleDayWeather> weathers) {
 
         temperatureLbl.setText(weathers.get(0).getTempInCelsius());
 
@@ -485,7 +507,7 @@ public class MainWindowController extends BaseController implements Initializabl
         }
     }
 
-    private void displayWeather2(List<SingleDayWeather> weathers){
+    private void displayWeather2(List<SingleDayWeather> weathers) {
 
         temperatureLbl2.setText(weathers.get(0).getTempInCelsius());
 
@@ -533,7 +555,7 @@ public class MainWindowController extends BaseController implements Initializabl
         }
     }
 
-    String makeFirstLetterCapital(String input){
+    String makeFirstLetterCapital(String input) {
         String modifiedString = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
         return modifiedString;
     }
@@ -541,26 +563,21 @@ public class MainWindowController extends BaseController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-            locationService = WeatherServiceFactory.createLocationsService();
-            weatherService = WeatherServiceFactory.createWeatherService();
-
-            searchIcon.setImage(new Image(getClass().getResourceAsStream("/icons/search.jpg")));
-            searchIcon2.setImage(new Image(getClass().getResourceAsStream("/icons/search.jpg")));
-            comboBox.setPromptText("Wprowadź nazwę miejscowości");
-            comboBox2.setPromptText("Wprowadź nazwę miejscowości");
-
-            leftWeatherVbox.setVisible(false);
-            rightWeatherVbox.setVisible(false);
-
-            leftWelcomeLbl.setVisible(true);
-            rightWelcomeLbl.setVisible(true);
-
-            loadingImage1.setVisible(false);
-            loadingImage2.setVisible(false);
-            errorlbl.setVisible(false);
-
-            loadingImage1.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
-            loadingImage2.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
+        locationService = WeatherServiceFactory.createLocationsService();
+        weatherService = WeatherServiceFactory.createWeatherService();
+        searchIcon.setImage(new Image(getClass().getResourceAsStream("/icons/search.jpg")));
+        searchIcon2.setImage(new Image(getClass().getResourceAsStream("/icons/search.jpg")));
+        comboBox.setPromptText("Wprowadź nazwę miejscowości");
+        comboBox2.setPromptText("Wprowadź nazwę miejscowości");
+        leftWeatherVbox.setVisible(false);
+        rightWeatherVbox.setVisible(false);
+        leftWelcomeLbl.setVisible(true);
+        rightWelcomeLbl.setVisible(true);
+        loadingImage1.setVisible(false);
+        loadingImage2.setVisible(false);
+        errorlbl.setVisible(false);
+        loadingImage1.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
+        loadingImage2.setImage(new Image(getClass().getResourceAsStream("/icons/loader.gif")));
     }
 
 }
