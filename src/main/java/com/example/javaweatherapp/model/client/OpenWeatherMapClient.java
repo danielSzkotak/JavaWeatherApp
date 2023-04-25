@@ -2,6 +2,7 @@ package com.example.javaweatherapp.model.client;
 
 import com.example.javaweatherapp.model.SingleDayWeather;
 import com.example.javaweatherapp.model.WeatherForecast;
+import com.example.javaweatherapp.Config;
 
 
 import java.io.BufferedReader;
@@ -26,7 +27,8 @@ public class OpenWeatherMapClient implements WeatherClient {
     private JsonManager jsonManager;
     private String cityName;
     private List<SingleDayWeather> weathers = new ArrayList<>();
-    private final String API_KEY = "d6d4d66e455fb01b0b1b210628a1dd91";
+    Config config = new Config();
+    private final String API_KEY = config.getAPI_KEY();
 
 
     @Override
