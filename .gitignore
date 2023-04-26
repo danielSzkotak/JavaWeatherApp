@@ -38,6 +38,5 @@ build/
 .DS_Store
 
 ### Config ###
-.src/main/java/com/example/javaweatherapp/Config.java
+/src/main/java/com/example/javaweatherapp/Config.java
 
-!**/src/main/**/javaweatherapp/Config.java
